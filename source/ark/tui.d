@@ -1141,8 +1141,12 @@ class App
 			"docs/README.md": "Documentation"
 		];
 
-		ArkTerm.printTree(projectTree);
-		writeln();
+		string tree = ArkTerm.printTree(
+			projectTree, onlyReturn:
+			true
+		);
+		ArkTerm.printAlert(tree);
+		writeln;
 		ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
 	}
 }
