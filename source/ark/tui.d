@@ -1140,10 +1140,9 @@ class App
 			"tests/unit.d": "Unit tests",
 			"docs/README.md": "Documentation"
 		];
-		ArkTerm.printTree(
-			projectTree);
-		writeln();
 
+		ArkTerm.printTree(projectTree);
+		writeln();
 		ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
 	}
 }
