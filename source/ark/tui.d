@@ -498,13 +498,13 @@ class App
 		TerminalOut.printKeyValue("Build", "Debug");
 		writeln();
 		write("Loading stuff: ");
-		foreach (i; 0 .. 11)
+		foreach (i; 0 .. 301)
 		{
-			TerminalOut.printProgress(i / 10.0, 100, "", Color.GREEN);
+			TerminalOut.printProgress(i / 200.0, 100, "", Color.GREEN);
 			import core.thread : Thread;
 			import core.time : msecs;
 
-			Thread.sleep(205.msecs);
+			Thread.sleep(5.msecs);
 		}
 		writeln();
 
