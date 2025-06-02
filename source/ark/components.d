@@ -78,8 +78,7 @@ template ArkComponents()
         writeln();
     }
 
-    static void printAlert(string message, LogLevel level = LogLevel
-            .INFO, size_t width = 60)
+    static void printAlert(string message, LogLevel level = LogLevel.INFO, size_t width = 60)
     {
         Color borderColor;
         string icon;
@@ -337,14 +336,11 @@ template ArkComponents()
     )
     {
         value = value < min ? min : (value > max ? max : value);
-        double percentage = (
-            value - min) / (max - min);
+        double percentage = (value - min) / (max - min);
         auto filled = cast(size_t)(percentage * width);
         auto empty = width - filled;
-        string bar = "█".replicate(
-            filled) ~ "░".replicate(empty);
-        string display = format("%s [%s] %.1f/%.1f", label, colorize(
-                bar, color), value, max);
+        string bar = "█".replicate(filled) ~ "░".replicate(empty);
+        string display = format("%s [%s] %.1f/%.1f", label, colorize(bar, color), value, max);
         writeln(display);
     }
 
