@@ -882,7 +882,7 @@ class App
 		ArkTerm.printToast("Something", LogLevel.SUCCESS);
 		writeln();
 
-		writeln("System Information:");
+		ArkTerm.printAlert("System Information:");
 		string[][] sysInfo = [
 			["OS", "CPU", "Memory"],
 			["Linux", "Intel i7", "16GB"],
@@ -934,8 +934,7 @@ class App
 			["Cache", "Running", "3%", "128MB"]
 		];
 
-		writeln("System Status:");
-
+		ArkTerm.printAlert("System Status:");
 		ArkTerm.printTable(headers, data);
 
 		ArkTerm.printTextBox(
@@ -962,10 +961,11 @@ class App
 			"Cache": "Redis Online\nHit Rate: 94.2%\nMemory: 2.1GB",
 			"Network": "Bandwidth: 45 Mbps\nLatency: 12ms\nPacket Loss: 0%"
 		];
-		writeln("System Dashboard:");
-		ArkTerm.printDashboard(dashboardPanels, 2);
 
-		writeln("Project Structure:");
+		ArkTerm.printAlert("System Dashboard:");
+		ArkTerm.printDashboard(dashboardPanels, 2);
+		ArkTerm.printAlert("Project Structure:");
+
 		string[string] projectTree = [
 			"src/main.d": "Main application file",
 			"src/ui/terminal.d": "Terminal UI components",
