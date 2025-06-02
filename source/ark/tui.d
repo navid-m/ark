@@ -838,7 +838,7 @@ class App
 		ArkTerm.printBreadcrumb(["Home", "Projects", "MyApp", "src"]);
 		writeln();
 
-		ArkTerm.printToast("Connection established successfully", LogLevel.SUCCESS);
+		ArkTerm.printToast("Something", LogLevel.SUCCESS);
 		writeln();
 
 		writeln("System Information:");
@@ -866,7 +866,7 @@ class App
 		ArkTerm.log(LogLevel.INFO, "Application starting...");
 		ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
 		ArkTerm.printKeyValue("Version", "1.0.0");
-		ArkTerm.printKeyValue("Author", "Your Name");
+		ArkTerm.printKeyValue("Author", "Acme");
 		ArkTerm.printKeyValue("Build", "Debug");
 
 		writeln();
