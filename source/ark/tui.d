@@ -833,7 +833,7 @@ class App
 {
 	void run()
 	{
-		ArkTerm.log(LogLevel.INFO, "Enhanced Application starting...");
+		ArkTerm.log(LogLevel.INFO, "Application starting...");
 
 		ArkTerm.printBreadcrumb(["Home", "Projects", "MyApp", "src"]);
 		writeln();
@@ -863,7 +863,6 @@ class App
 		ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
 		writeln();
 
-		ArkTerm.log(LogLevel.INFO, "Application starting...");
 		ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
 		ArkTerm.printKeyValue("Version", "1.0.0");
 		ArkTerm.printKeyValue("Author", "Acme");
