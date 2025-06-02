@@ -32,36 +32,42 @@ final class TerminalOut
 
 	static void clear()
 	{
-		for (int i = 0; i < 100; i++)
+		version (Windows)
 		{
-			writeln("\n");
-		}
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		CONSOLE_SCREEN_BUFFER_INFO csbi;
+			for (int i = 0; i < 100; i++)
+			{
+				writeln("\n");
+			}
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-		if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+			if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+			{
+				writeln("Failed to get console buffer info.");
+				return;
+			}
+
+			SMALL_RECT scrollRect = csbi.srWindow;
+			COORD destOrigin = COORD(0, cast(short)(csbi.srWindow.Top - 100));
+			CHAR_INFO fill;
+			fill.Char.AsciiChar = ' ';
+			fill.Attributes = csbi.wAttributes;
+
+			BOOL success = ScrollConsoleScreenBufferA(
+				hConsole,
+				&scrollRect,
+				null,
+				destOrigin,
+				&fill
+
+			);
+			COORD topLeft = COORD(0, csbi.srWindow.Top);
+			SetConsoleCursorPosition(hConsole, topLeft);
+		}
+		version (Posix)
 		{
-			writeln("Failed to get console buffer info.");
-			return;
+			write("\033[2J\033[H");
 		}
-
-		SMALL_RECT scrollRect = csbi.srWindow;
-		COORD destOrigin = COORD(0, cast(short)(csbi.srWindow.Top - 100));
-		CHAR_INFO fill;
-		fill.Char.AsciiChar = ' ';
-		fill.Attributes = csbi.wAttributes;
-
-		BOOL success = ScrollConsoleScreenBufferA(
-			hConsole,
-			&scrollRect,
-			null,
-			destOrigin,
-			&fill
-
-		);
-
-		COORD topLeft = COORD(0, csbi.srWindow.Top);
-		SetConsoleCursorPosition(hConsole, topLeft);
 	}
 }
 
