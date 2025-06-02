@@ -60,9 +60,6 @@ final class TerminalOut
 
 		);
 
-		if (!success)
-			writeln("Scroll failed: ", GetLastError());
-
 		COORD topLeft = COORD(0, csbi.srWindow.Top);
 		SetConsoleCursorPosition(hConsole, topLeft);
 	}
