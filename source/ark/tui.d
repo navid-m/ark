@@ -61,7 +61,10 @@ enum LogLevel
 	DEBUG
 }
 
-final class TerminalOut
+/** 
+ * Terminal components.
+ */
+final class ArkTerm
 {
 	private static immutable defaultLineLength = 50;
 	private static bool colorEnabled = true;
@@ -352,7 +355,10 @@ final class TerminalOut
 	}
 }
 
-final class TUI
+/** 
+ * Specifically for input-capturing TUIs.
+ */
+final class ArkTUI
 {
 	version (Windows)
 	{
@@ -459,12 +465,12 @@ final class TUI
 		{
 			clear();
 			writeln(title);
-			TerminalOut.printSeparator("─", title.length);
+			ArkTerm.printSeparator("─", title.length);
 
 			foreach (i, option; options)
 			{
 				if (i == selected)
-					writeln(TerminalOut.colorize("> " ~ option, Color.CYAN));
+					writeln(ArkTerm.colorize("> " ~ option, Color.CYAN));
 				else
 					writeln("  " ~ option);
 			}
@@ -493,28 +499,28 @@ class App
 {
 	void run()
 	{
-		TerminalOut.log(LogLevel.INFO, "Application starting...");
-		TerminalOut.printAlert("Some message", LogLevel.SUCCESS);
-		TerminalOut.printKeyValue("Version", "1.0.0");
-		TerminalOut.printKeyValue("Author", "Your Name");
-		TerminalOut.printKeyValue("Build", "Debug");
+		ArkTerm.log(LogLevel.INFO, "Application starting...");
+		ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
+		ArkTerm.printKeyValue("Version", "1.0.0");
+		ArkTerm.printKeyValue("Author", "Your Name");
+		ArkTerm.printKeyValue("Build", "Debug");
 
 		writeln();
 		write("Loading stuff: ");
 		foreach (i; 0 .. 301)
 		{
-			TerminalOut.printProgress(i / 200.0, 100, "", Color.GREEN);
+			ArkTerm.printProgress(i / 200.0, 10, "", Color.GREEN);
 			import core.thread : Thread;
 			import core.time : msecs;
 
-			Thread.sleep(5.msecs);
+			Thread.sleep(1.msecs);
 		}
 
 		writeln();
 
-		TerminalOut.printStatus("Core module", true, "loaded in 245ms");
-		TerminalOut.printStatus("Network module", true, "connected");
-		TerminalOut.printStatus("Database module", false, "connection failed");
+		ArkTerm.printStatus("Core module", true, "loaded in 245ms");
+		ArkTerm.printStatus("Network module", true, "connected");
+		ArkTerm.printStatus("Database module", false, "connection failed");
 
 		writeln();
 
@@ -527,8 +533,8 @@ class App
 
 		writeln("System Status:");
 
-		TerminalOut.printTable(headers, data);
-		TerminalOut.log(LogLevel.SUCCESS, "Demo completed successfully");
+		ArkTerm.printTable(headers, data);
+		ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
 
 		readln();
 	}
