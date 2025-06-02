@@ -247,8 +247,7 @@ final class ArkTUI
 	{
 		version (Windows)
 		{
-			hIn = GetStdHandle(
-				STD_INPUT_HANDLE);
+			hIn = GetStdHandle(STD_INPUT_HANDLE);
 			DWORD mode;
 			GetConsoleMode(hIn, &mode);
 			originalMode = mode;
