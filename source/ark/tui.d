@@ -107,8 +107,12 @@ final class ArkTerm
 		write("\n");
 	}
 
-	static void printProgress(double progress, size_t width = 40, string prefix = "", Color barColor = Color
-			.GREEN)
+	static void printProgress(
+		double progress,
+		size_t width = 40,
+		string prefix = "",
+		Color barColor = Color.GREEN
+	)
 	{
 		progress = progress < 0 ? 0 : (progress > 1 ? 1 : progress);
 
