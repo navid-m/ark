@@ -77,15 +77,13 @@ final class TerminalOut
 		colorEnabled = enable;
 	}
 
-	private static string colorize(string text, Color color)
-	{
-		return colorEnabled ? (color ~ text ~ Color.RESET) : text;
-	}
+	private static string colorize(string text, Color color) => colorEnabled ? (
+		color ~ text ~ Color.RESET
+	) : text;
 
-	private static string stylize(string text, Style style)
-	{
-		return colorEnabled ? (style ~ text ~ Style.RESET) : text;
-	}
+	private static string stylize(string text, Style style) => colorEnabled ? (
+		style ~ text ~ Style.RESET
+	) : text;
 
 	static void printSeparator(string sep = "─", size_t length = defaultLineLength, Color color = Color
 			.RESET)
@@ -106,9 +104,9 @@ final class TerminalOut
 			.GREEN)
 	{
 		progress = progress < 0 ? 0 : (progress > 1 ? 1 : progress);
+
 		auto filled = cast(size_t)(progress * width);
 		auto empty = width - filled;
-
 		auto bar = "█".replicate(filled) ~ "░".replicate(empty);
 		auto percentage = format("%.1f%%", progress * 100);
 
@@ -176,7 +174,6 @@ final class TerminalOut
 	{
 		string symbol = success ? "✓" : "✗";
 		Color color = success ? Color.GREEN : Color.RED;
-
 		write(colorize(symbol, color) ~ " " ~ message);
 		if (details.length > 0)
 		{
@@ -216,21 +213,24 @@ final class TerminalOut
 			write("─".replicate(width + 2));
 			write(i == cast(int) colWidths.length - 1 ? "┐" : "┬");
 		}
-		writeln();
 
+		writeln();
 		write("│");
+
 		foreach (i, header; headers)
 		{
 			writef(" %-*s │", colWidths[i], header);
 		}
-		writeln();
 
+		writeln();
 		write("├");
+
 		foreach (i, width; colWidths)
 		{
 			write("─".replicate(width + 2));
 			write(i == cast(int) colWidths.length - 1 ? "┤" : "┼");
 		}
+
 		writeln();
 
 		foreach (row; rows)
@@ -245,11 +245,13 @@ final class TerminalOut
 		}
 
 		write("└");
+
 		foreach (i, width; colWidths)
 		{
 			write("─".replicate(width + 2));
 			write(i == cast(int) colWidths.length - 1 ? "┘" : "┴");
 		}
+
 		writeln();
 	}
 
@@ -288,7 +290,8 @@ final class TerminalOut
 
 		writeln(colorize("┌" ~ "─".replicate(boxWidth - 2) ~ "┐", borderColor));
 		writeln(colorize("│", borderColor) ~ " " ~ colorize(icon, borderColor) ~ " " ~
-				format("%-*s", boxWidth - 6, lines[0]) ~ " " ~ colorize("│", borderColor));
+				format("%-*s", boxWidth - 6, lines[0]) ~ " " ~ colorize("│", borderColor)
+		);
 
 		foreach (line; lines[1 .. $])
 		{
@@ -302,9 +305,11 @@ final class TerminalOut
 	static void printKeyValue(string key, string value, size_t keyWidth = 20, Color keyColor = Color
 			.CYAN)
 	{
-		writef("%s: %s\n",
+		writef(
+			"%s: %s\n",
 			colorize(format("%-*s", keyWidth, key), keyColor),
-			value);
+			value
+		);
 	}
 
 	static void clear()
@@ -490,12 +495,11 @@ class App
 	void run()
 	{
 		TerminalOut.log(LogLevel.INFO, "Application starting...");
-
 		TerminalOut.printAlert("Some message", LogLevel.SUCCESS);
-
 		TerminalOut.printKeyValue("Version", "1.0.0");
 		TerminalOut.printKeyValue("Author", "Your Name");
 		TerminalOut.printKeyValue("Build", "Debug");
+
 		writeln();
 		write("Loading stuff: ");
 		foreach (i; 0 .. 301)
@@ -506,6 +510,7 @@ class App
 
 			Thread.sleep(5.msecs);
 		}
+
 		writeln();
 
 		TerminalOut.printStatus("Core module", true, "loaded in 245ms");
@@ -522,8 +527,8 @@ class App
 		];
 
 		writeln("System Status:");
-		TerminalOut.printTable(headers, data);
 
+		TerminalOut.printTable(headers, data);
 		TerminalOut.log(LogLevel.SUCCESS, "Demo completed successfully");
 
 		readln();
