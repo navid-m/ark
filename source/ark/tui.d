@@ -124,7 +124,6 @@ final class ArkTerm
 		write("\r" ~ prefix);
 		write(colorize(bar, barColor));
 		write(" " ~ percentage);
-		stdout.flush();
 	}
 
 	static void log(LogLevel level, string message)
@@ -515,9 +514,8 @@ class App
 		{
 			ArkTerm.printProgress(i / 200.0, 10, "", Color.GREEN);
 			import core.thread : Thread;
-			import core.time : msecs;
 
-			Thread.sleep(1.msecs);
+			Thread.sleep(100.nsecs);
 		}
 
 		writeln();
@@ -539,8 +537,6 @@ class App
 
 		ArkTerm.printTable(headers, data);
 		ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
-
-		readln();
 	}
 }
 
