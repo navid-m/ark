@@ -905,11 +905,9 @@ class App
 		);
 		writeln();
 
-		// Code block demo
 		string sampleCode = `void main() {
-    // Hello world in D
     import std.stdio;
-    writeln("Hello, World!");
+    writeln("Hello, World");
     
     foreach(i; 0..5) {
         writeln("Count: ", i);
@@ -918,7 +916,6 @@ class App
 		ArkTerm.printCodeBlock(sampleCode, "D");
 		writeln();
 
-		// Dashboard demo
 		string[string] dashboardPanels = [
 			"Server Status": "Online\nUptime: 24h 15m\nLoad: 0.45",
 			"Database": "Connected\nQueries/sec: 1,247\nConnections: 12/100",
@@ -928,7 +925,6 @@ class App
 		writeln("System Dashboard:");
 		ArkTerm.printDashboard(dashboardPanels, 2);
 
-		// Tree view demo
 		writeln("Project Structure:");
 		string[string] projectTree = [
 			"src/main.d": "Main application file",
