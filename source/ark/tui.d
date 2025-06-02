@@ -183,11 +183,8 @@ final class ArkTerm
 				return;
 			}
 
-			SMALL_RECT scrollRect = csbi
-				.srWindow;
-			COORD destOrigin = COORD(0, cast(
-					short)(
-					csbi.srWindow.Top - 100));
+			SMALL_RECT scrollRect = csbi.srWindow;
+			COORD destOrigin = COORD(0, cast(short)(csbi.srWindow.Top - 100));
 			CHAR_INFO fill;
 			fill.Char.AsciiChar = ' ';
 			fill.Attributes = csbi
@@ -243,8 +240,7 @@ final class ArkTUI
 	{
 		disableRawMode();
 		write("\033[?25h");
-		write(
-			"\033[0m\033[2J\033[H");
+		write("\033[0m\033[2J\033[H");
 	}
 
 	void enableRawMode()
@@ -305,19 +301,14 @@ final class ArkTUI
 	void drawBox(int x, int y, int w, int h, string title = "")
 	{
 		moveTo(y, x);
-		write(
-			"┌" ~ "─".replicate(
-				w - 2) ~ "┐");
+		write("┌" ~ "─".replicate(w - 2) ~ "┐");
 		foreach (i; 1 .. h - 1)
 		{
 			moveTo(y + i, x);
-			write("│" ~ " ".replicate(
-					w - 2) ~ "│");
+			write("│" ~ " ".replicate(w - 2) ~ "│");
 		}
 		moveTo(y + h - 1, x);
-		write(
-			"└" ~ "─".replicate(
-				w - 2) ~ "┘");
+		write("└" ~ "─".replicate(w - 2) ~ "┘");
 		if (title.length > 0 && title.length < w - 4)
 		{
 			moveTo(y, x + 2);
@@ -333,36 +324,25 @@ final class ArkTUI
 		while (true)
 		{
 			clear();
-			writeln(
-				title);
-			ArkTerm.printSeparator("─", title
-					.length);
+			writeln(title);
+			ArkTerm.printSeparator("─", title.length);
 
 			foreach (i, option; options)
 			{
-				if (
-					i == selected)
-					writeln(
-						ArkTerm.colorize(
-							"> " ~ option, Color
-							.CYAN));
+				if (i == selected)
+					writeln(ArkTerm.colorize("> " ~ option, Color.CYAN));
 				else
-					writeln(
-						"  " ~ option);
+					writeln("  " ~ option);
 			}
 
 			char key = readKey();
 			switch (key)
 			{
 			case 'w', 'W':
-				selected = selected > 0 ? selected - 1 : cast(
-					int) options.length - 1;
+				selected = selected > 0 ? selected - 1 : cast(int) options.length - 1;
 				break;
 			case 's', 'S':
-				selected = (
-					selected + 1) % cast(
-					int) options
-					.length;
+				selected = (selected + 1) % cast(int) options.length;
 				break;
 			case '\r', '\n':
 				return selected;
@@ -377,7 +357,6 @@ final class ArkTUI
 
 unittest
 {
-
 	class App
 	{
 		void run()
@@ -399,28 +378,16 @@ unittest
 			ArkTerm.printAlert(
 				"System Information:");
 			string[][] sysInfo = [
+				["OS", "CPU", "Memory"],
+				["Linux", "Intel i7", "16GB"],
+				["Version", "Usage", "Available"],
 				[
-					"OS",
-					"CPU",
-					"Memory"
-				],
-				[
-					"Linux",
-					"Intel i7",
-					"16GB"
-				],
-				[
-					"Version",
-					"Usage",
-					"Available"
-				],
-				[
-					"Ubuntu 22.04",
-					"45%",
-					"8.8GB"
+					"Ubuntu 22.04", "45%", "8.8GB"
 				]
 			];
+
 			size_t[] colWidths = [15, 12, 10];
+
 			ArkTerm.printColumns(sysInfo, colWidths);
 			writeln();
 
@@ -430,13 +397,13 @@ unittest
 					.GREEN);
 			ArkTerm.printGauge(90, 0, 100, 25, "Disk", Color
 					.RED);
-			writeln();
+			writeln;
 
 			double[] cpuData = [
 				23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
 			];
 			ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
-			writeln();
+			writeln;
 
 			ArkTerm.printAlert("Some message", LogLevel
 					.SUCCESS);
@@ -444,26 +411,22 @@ unittest
 			ArkTerm.printKeyValue("Author", "Acme");
 			ArkTerm.printKeyValue("Build", "Debug");
 
-			writeln();
-			write(
-				"Loading stuff: ");
+			writeln;
+			write("Loading stuff: ");
+
 			foreach (i; 0 .. 301)
 			{
-				ArkTerm.printProgress(i / 200.0, 10, "", Color
-						.GREEN);
-
-				Thread.sleep(
-					100
-						.nsecs);
+				ArkTerm.printProgress(i / 200.0, 10, "", Color.GREEN);
+				Thread.sleep(100.nsecs);
 			}
 
-			writeln();
+			writeln;
 
 			ArkTerm.printStatus("Core module", true, "loaded in 245ms");
 			ArkTerm.printStatus("Network module", true, "connected");
 			ArkTerm.printStatus("Database module", false, "connection failed");
 
-			writeln();
+			writeln;
 
 			string[] headers = [
 				"Name",
@@ -491,17 +454,17 @@ unittest
 					"128MB"
 				]
 			];
-			ArkTerm.printAlert(
-				"System Status:");
-			ArkTerm.printTable(headers, data);
 
+			ArkTerm.printAlert("System Status:");
+			ArkTerm.printTable(headers, data);
 			ArkTerm.printTextBox(
 				"This is a multi-line text box with automatic word wrapping. " ~
 					"It can contain multiple paragraphs and will probably properly format the content " ~
 					"within the specified width constraints.\n\n", 50, BorderStyle
 					.ROUNDED, Color.BLUE, "Information"
 			);
-			writeln();
+
+			writeln;
 
 			string sampleCode = `void main() {
     import std.stdio;
@@ -543,6 +506,5 @@ unittest
 		}
 	}
 
-	auto app = new App();
-	app.run();
+	new App().run;
 }
