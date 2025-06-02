@@ -476,18 +476,19 @@ unittest
     }
 }`;
 			ArkTerm.printCodeBlock(sampleCode, "D");
-			writeln();
+
+			writeln;
+
 			string[string] dashboardPanels = [
 				"Server Status": "Online\nUptime: 24h 15m\nLoad: 0.45",
 				"Database": "Connected\nQueries/sec: 1,247\nConnections: 12/100",
 				"Cache": "Redis Online\nHit Rate: 94.2%\nMemory: 2.1GB",
 				"Network": "Bandwidth: 45 Mbps\nLatency: 12ms\nPacket Loss: 0%"
 			];
-			ArkTerm.printAlert(
-				"System Dashboard:");
+
+			ArkTerm.printAlert("System Dashboard:");
 			ArkTerm.printDashboard(dashboardPanels, 2);
-			ArkTerm.printAlert(
-				"Project Structure:");
+			ArkTerm.printAlert("Project Structure:");
 
 			string[string] projectTree = [
 				"src/main.d": "Main application file",
