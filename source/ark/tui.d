@@ -65,6 +65,10 @@ final class TerminalOut
 {
 	private static immutable defaultLineLength = 50;
 	private static bool colorEnabled = true;
+	private static size_t spinnerIndex = 0;
+	private static immutable string[] spinnerChars = [
+		"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
+	];
 
 	static this()
 	{
@@ -152,11 +156,6 @@ final class TerminalOut
 			message
 		);
 	}
-
-	private static size_t spinnerIndex = 0;
-	private static immutable string[] spinnerChars = [
-		"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
-	];
 
 	static void printSpinner(string message = "Loading...")
 	{
