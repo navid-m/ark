@@ -420,11 +420,7 @@ unittest
 					"8.8GB"
 				]
 			];
-			size_t[] colWidths = [
-				15,
-				12,
-				10
-			];
+			size_t[] colWidths = [15, 12, 10];
 			ArkTerm.printColumns(sysInfo, colWidths);
 			writeln();
 
@@ -437,21 +433,7 @@ unittest
 			writeln();
 
 			double[] cpuData = [
-				23,
-				45,
-				67,
-				43,
-				89,
-				76,
-				54,
-				32,
-				67,
-				78,
-				45,
-				23,
-				56,
-				78,
-				90
+				23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
 			];
 			ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
 			writeln();
