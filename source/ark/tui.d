@@ -8,6 +8,7 @@ import std.string;
 import std.datetime;
 import std.format;
 import std.math;
+import core.thread;
 
 version (Windows)
 {
@@ -860,6 +861,7 @@ class App
 		double[] cpuData = [
 			23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
 		];
+
 		ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
 		writeln();
 
@@ -873,7 +875,6 @@ class App
 		foreach (i; 0 .. 301)
 		{
 			ArkTerm.printProgress(i / 200.0, 10, "", Color.GREEN);
-			import core.thread : Thread;
 
 			Thread.sleep(100.nsecs);
 		}
