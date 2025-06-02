@@ -7,8 +7,7 @@ template ArkComponents()
         if (headers.length == 0)
             return;
 
-        auto colWidths = new size_t[headers
-                .length];
+        auto colWidths = new size_t[headers.length];
         foreach (i, header; headers)
         {
             colWidths[i] = max(header.length, minColWidth);
