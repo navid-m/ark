@@ -99,9 +99,9 @@ final class ArkTerm
 			SetConsoleOutputCP(65_001);
 
 		borderStyles = [
-			BorderStyle.SINGLE: BorderChars("┌", "┐", "└", "┘", "─", "│", "┬", "┴", "├", "┤", "┼"),
+			BorderStyle.SINGLE: BorderChars("┌", "┐", "└", "─┘", "─", "│", "┬", "┴", "├", "┤", "┼"),
 			BorderStyle.DOUBLE: BorderChars("╔", "╗", "╚", "╝", "═", "║", "╦", "╩", "╠", "╣", "╬"),
-			BorderStyle.ROUNDED: BorderChars("╭", "╮", "╰", "╯", "─", "│", "┬", "┴", "├", "┤", "┼"),
+			BorderStyle.ROUNDED: BorderChars("╭", "╮", "╰", "─╯", "─", "│", "┬", "┴", "├", "┤", "┼"),
 			BorderStyle.THICK: BorderChars("┏", "┓", "┗", "┛", "━", "┃", "┳", "┻", "┣", "┫", "╋"),
 			BorderStyle.ASCII: BorderChars("+", "+", "+", "+", "-", "|", "+", "+", "+", "+", "+")
 		];
@@ -215,7 +215,7 @@ final class ArkTerm
 	{
 		auto borders = borderStyles[style];
 		auto lines = text.split('\n');
-		auto maxWidth = width - 4;
+		auto maxWidth = width - 3;
 		string[] wrappedLines;
 
 		foreach (line; lines)
@@ -897,6 +897,49 @@ class App
 		writeln("System Status:");
 
 		ArkTerm.printTable(headers, data);
+
+		ArkTerm.printTextBox(
+			"This is a multi-line text box with automatic word wrapping. " ~
+				"It can contain multiple paragraphs and will probably properly format the content " ~
+				"within the specified width constraints.\n\n", 50, BorderStyle.ROUNDED, Color.BLUE, "Information"
+		);
+		writeln();
+
+		// Code block demo
+		string sampleCode = `void main() {
+    // Hello world in D
+    import std.stdio;
+    writeln("Hello, World!");
+    
+    foreach(i; 0..5) {
+        writeln("Count: ", i);
+    }
+}`;
+		ArkTerm.printCodeBlock(sampleCode, "D");
+		writeln();
+
+		// Dashboard demo
+		string[string] dashboardPanels = [
+			"Server Status": "Online\nUptime: 24h 15m\nLoad: 0.45",
+			"Database": "Connected\nQueries/sec: 1,247\nConnections: 12/100",
+			"Cache": "Redis Online\nHit Rate: 94.2%\nMemory: 2.1GB",
+			"Network": "Bandwidth: 45 Mbps\nLatency: 12ms\nPacket Loss: 0%"
+		];
+		writeln("System Dashboard:");
+		ArkTerm.printDashboard(dashboardPanels, 2);
+
+		// Tree view demo
+		writeln("Project Structure:");
+		string[string] projectTree = [
+			"src/main.d": "Main application file",
+			"src/ui/terminal.d": "Terminal UI components",
+			"src/core/app.d": "Core application logic",
+			"tests/unit.d": "Unit tests",
+			"docs/README.md": "Documentation"
+		];
+		ArkTerm.printTree(projectTree);
+		writeln();
+
 		ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
 	}
 }
