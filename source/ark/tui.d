@@ -369,14 +369,14 @@ unittest
 				"MyApp",
 				"src"
 			]);
-			writeln();
 
-			ArkTerm.printToast("Something", LogLevel
-					.SUCCESS);
-			writeln();
+			writeln;
 
-			ArkTerm.printAlert(
-				"System Information:");
+			ArkTerm.printToast("Something", LogLevel.SUCCESS);
+
+			writeln;
+
+			ArkTerm.printAlert("System Information:");
 			string[][] sysInfo = [
 				["OS", "CPU", "Memory"],
 				["Linux", "Intel i7", "16GB"],
@@ -389,29 +389,30 @@ unittest
 			size_t[] colWidths = [15, 12, 10];
 
 			ArkTerm.printColumns(sysInfo, colWidths);
-			writeln();
 
-			ArkTerm.printGauge(75, 0, 100, 25, "CPU Usage", Color
-					.YELLOW);
-			ArkTerm.printGauge(45, 0, 100, 25, "Memory", Color
-					.GREEN);
-			ArkTerm.printGauge(90, 0, 100, 25, "Disk", Color
-					.RED);
+			writeln;
+
+			ArkTerm.printGauge(75, 0, 100, 25, "CPU Usage", Color.YELLOW);
+			ArkTerm.printGauge(45, 0, 100, 25, "Memory", Color.GREEN);
+			ArkTerm.printGauge(90, 0, 100, 25, "Disk", Color.RED);
+
 			writeln;
 
 			double[] cpuData = [
 				23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
 			];
+
 			ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
+
 			writeln;
 
-			ArkTerm.printAlert("Some message", LogLevel
-					.SUCCESS);
+			ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
 			ArkTerm.printKeyValue("Version", "1.0.0");
 			ArkTerm.printKeyValue("Author", "Acme");
 			ArkTerm.printKeyValue("Build", "Debug");
 
 			writeln;
+
 			write("Loading stuff: ");
 
 			foreach (i; 0 .. 301)
@@ -500,6 +501,7 @@ unittest
 				projectTree, onlyReturn:
 				true
 			);
+
 			ArkTerm.printAlert(tree);
 			writeln;
 			ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
