@@ -7,6 +7,7 @@ import std.stdio;
 import std.string;
 import std.datetime;
 import std.format;
+import std.math;
 
 version (Windows)
 {
@@ -61,6 +62,22 @@ enum LogLevel
 	DEBUG
 }
 
+enum BorderStyle
+{
+	SINGLE,
+	DOUBLE,
+	ROUNDED,
+	THICK,
+	ASCII
+}
+
+struct BorderChars
+{
+	string topLeft, topRight, bottomLeft, bottomRight;
+	string horizontal, vertical;
+	string topJoin, bottomJoin, leftJoin, rightJoin, cross;
+}
+
 /** 
  * Terminal components.
  */
@@ -73,10 +90,20 @@ final class ArkTerm
 		"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
 	];
 
+	private static BorderChars[BorderStyle] borderStyles;
+
 	static this()
 	{
 		version (Windows)
 			SetConsoleOutputCP(65_001);
+
+		borderStyles = [
+			BorderStyle.SINGLE: BorderChars("┌", "┐", "└", "┘", "─", "│", "┬", "┴", "├", "┤", "┼"),
+			BorderStyle.DOUBLE: BorderChars("╔", "╗", "╚", "╝", "═", "║", "╦", "╩", "╠", "╣", "╬"),
+			BorderStyle.ROUNDED: BorderChars("╭", "╮", "╰", "╯", "─", "│", "┬", "┴", "├", "┤", "┼"),
+			BorderStyle.THICK: BorderChars("┏", "┓", "┗", "┛", "━", "┃", "┳", "┻", "┣", "┫", "╋"),
+			BorderStyle.ASCII: BorderChars("+", "+", "+", "+", "-", "|", "+", "+", "+", "+", "+")
+		];
 	}
 
 	static void enableColor(bool enable = true)
@@ -91,6 +118,310 @@ final class ArkTerm
 	private static string stylize(string text, Style style) => colorEnabled ? (
 		style ~ text ~ Style.RESET
 	) : text;
+
+	static void printColumns(string[][] columns, size_t[] widths = [], string separator = " │ ")
+	{
+		if (columns.length == 0)
+			return;
+
+		auto maxRows = columns.map!(col => col.length).maxElement;
+
+		if (widths.length == 0)
+		{
+			widths = new size_t[columns.length];
+			foreach (i, col; columns)
+			{
+				widths[i] = col.length > 0 ? col.map!(s => s.length).maxElement : 0;
+			}
+		}
+
+		foreach (row; 0 .. maxRows)
+		{
+			foreach (col; 0 .. columns.length)
+			{
+				string content = row < columns[col].length ? columns[col][row] : "";
+				if (col >= widths.length)
+					continue;
+				writef("%-*s", widths[col], content);
+				if (col < cast(int) columns.length - 1)
+					write(separator);
+			}
+			writeln();
+		}
+	}
+
+	static void printTree(string[string] tree, string root = "", size_t level = 0, bool[] isLast = [
+	])
+	{
+		string indent = "";
+		foreach (i; 0 .. level)
+		{
+			if (i < isLast.length && isLast[i])
+				indent ~= "    ";
+			else
+				indent ~= "│   ";
+		}
+
+		string prefix = level == 0 ? "" : (isLast.length > 0 && isLast[$ - 1] ? "└── "
+				: "├── ");
+		writeln(indent ~ prefix ~ (root.length > 0 ? root : "root"));
+
+		auto keys = tree.keys.sort();
+		int i = 0;
+
+		foreach (key; keys)
+		{
+			bool last = (i == cast(int) keys.length - 1);
+			auto newIsLast = isLast ~ last;
+
+			if (key.startsWith(root ~ "/") || (root.length == 0 && key.indexOf('/') == -1))
+			{
+				string display = root.length == 0 ? key : key[root.length + 1 .. $];
+				if (display.indexOf('/') == -1)
+				{
+					string itemIndent = "";
+					foreach (j; 0 .. level + 1)
+					{
+						if (j < newIsLast.length && newIsLast[j])
+							itemIndent ~= "    ";
+						else
+							itemIndent ~= "│   ";
+					}
+					string itemPrefix = last ? "└── " : "├── ";
+					writeln(itemIndent ~ itemPrefix ~ display ~ " = " ~ tree[key]);
+				}
+			}
+			i++;
+		}
+	}
+
+	static void printGauge(double value, double min = 0, double max = 100, size_t width = 30,
+		string label = "", Color color = Color.GREEN)
+	{
+		value = value < min ? min : (value > max ? max : value);
+		double percentage = (value - min) / (max - min);
+
+		auto filled = cast(size_t)(percentage * width);
+		auto empty = width - filled;
+
+		string bar = "█".replicate(filled) ~ "░".replicate(empty);
+		string display = format("%s [%s] %.1f/%.1f", label, colorize(bar, color), value, max);
+		writeln(display);
+	}
+
+	static void printTextBox(string text, size_t width = 60, BorderStyle style = BorderStyle.SINGLE,
+		Color borderColor = Color.RESET, string title = "")
+	{
+		auto borders = borderStyles[style];
+		auto lines = text.split('\n');
+		auto maxWidth = width - 4;
+		string[] wrappedLines;
+
+		foreach (line; lines)
+		{
+			if (line.length <= maxWidth)
+			{
+				wrappedLines ~= line;
+			}
+			else
+			{
+				auto words = line.split(' ');
+				string currentLine = "";
+				foreach (word; words)
+				{
+					if (currentLine.length + word.length + 1 <= maxWidth)
+					{
+						currentLine ~= (currentLine.length > 0 ? " " : "") ~ word;
+					}
+					else
+					{
+						if (currentLine.length > 0)
+							wrappedLines ~= currentLine;
+						currentLine = word;
+					}
+				}
+				if (currentLine.length > 0)
+					wrappedLines ~= currentLine;
+			}
+		}
+
+		string topLine = borders.topLeft ~ borders.horizontal.replicate(
+			width - 2) ~ borders.topRight;
+		if (title.length > 0 && title.length < width - 4)
+		{
+			auto titlePos = (width - title.length - 2) / 2;
+			topLine = borders.topLeft ~ borders.horizontal.replicate(
+				titlePos) ~
+				" " ~ title ~ " " ~
+				borders.horizontal.replicate(
+					width - titlePos - title.length - 3) ~ borders.topRight;
+		}
+		writeln(colorize(topLine, borderColor));
+
+		foreach (line; wrappedLines)
+		{
+			writeln(colorize(borders.vertical, borderColor) ~
+					format(" %-*s ", maxWidth, line) ~
+					colorize(borders.vertical, borderColor));
+		}
+
+		writeln(colorize(borders.bottomLeft ~ borders.horizontal.replicate(
+				width - 2) ~ borders.bottomRight, borderColor));
+	}
+
+	static void printBanner(string text, string font = "block")
+	{
+		string[char] blockChars = [
+			'A': "██████\r\n██  ██\r\n██████\r\n██  ██\r\n██  ██",
+			'B': "██████\r\n██  ██\r\n██████\r\n██  ██\r\n██████",
+			'C': "██████\r\n██    \r\n██    \r\n██    \r\n██████",
+		];
+
+		foreach (c; text.toUpper())
+		{
+			if (c in blockChars)
+			{
+				writeln(blockChars[c]);
+				writeln();
+			}
+			else if (c == ' ')
+			{
+				writeln("      ");
+			}
+		}
+	}
+
+	static void printDashboard(string[string] panels, size_t cols = 2)
+	{
+		auto keys = panels.keys.array;
+		auto rows = (keys.length + cols - 1) / cols;
+
+		foreach (row; 0 .. rows)
+		{
+			foreach (col; 0 .. cols)
+			{
+				auto idx = row * cols + col;
+				if (idx < keys.length)
+				{
+					auto key = keys[idx];
+					printTextBox(panels[key], 35, BorderStyle.SINGLE, Color.CYAN, key);
+				}
+			}
+			writeln();
+		}
+	}
+
+	static void printSparkline(double[] data, size_t width = 50, string label = "")
+	{
+		if (data.length == 0)
+			return;
+
+		auto minVal = data.minElement;
+		auto maxVal = data.maxElement;
+		auto range = maxVal - minVal;
+
+		if (range == 0)
+			range = 1;
+
+		string[] chars = [
+			"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"
+		];
+		string sparkline = "";
+
+		foreach (val; data)
+		{
+			auto normalized = (val - minVal) / range;
+			auto charIndex = cast(size_t)(normalized * (cast(int) chars.length - 1));
+			sparkline ~= chars[charIndex];
+		}
+
+		if (label.length > 0)
+			writef("%s: ", label);
+		writef("%s (%.2f - %.2f)\n", colorize(sparkline, Color.GREEN), minVal, maxVal);
+	}
+
+	static void printCodeBlock(string code, string language = "", Color commentColor = Color
+			.BRIGHT_BLACK)
+	{
+		printTextBox("", 80, BorderStyle.SINGLE, Color.BRIGHT_BLACK, language.length > 0 ? language.toUpper()
+				: "CODE");
+
+		foreach (line; code.split('\n'))
+		{
+			string processedLine = line;
+
+			if (line.strip().startsWith("//") || line.strip().startsWith("#"))
+			{
+				processedLine = colorize(line, commentColor);
+			}
+
+			writeln("  " ~ processedLine);
+		}
+
+		writeln(colorize("└" ~ "─".replicate(78) ~ "┘", Color.BRIGHT_BLACK));
+	}
+
+	static void printToast(string message, LogLevel level = LogLevel.INFO, size_t duration = 3)
+	{
+		Color bgColor = Color.BLUE;
+		string icon = "ℹ";
+
+		final switch (level)
+		{
+		case LogLevel.INFO:
+			bgColor = Color.BLUE;
+			icon = "ℹ";
+			break;
+		case LogLevel.SUCCESS:
+			bgColor = Color.GREEN;
+			icon = "✓";
+			break;
+		case LogLevel.WARNING:
+			bgColor = Color.YELLOW;
+			icon = "⚠";
+			break;
+		case LogLevel.ERROR:
+			bgColor = Color.RED;
+			icon = "✗";
+			break;
+		case LogLevel.DEBUG:
+			bgColor = Color.MAGENTA;
+			icon = "🐛";
+			break;
+		}
+
+		auto timestamp = Clock.currTime.toString()[11 .. 19];
+		string toast = format(" %s %s (%s) ", icon, message, timestamp);
+
+		writeln(colorize("╭" ~ "─".replicate(toast.length) ~ "╮", bgColor));
+		writeln(colorize("│" ~ toast ~ "  │", bgColor));
+		writeln(colorize("╰" ~ "─".replicate(toast.length) ~ "╯", bgColor));
+	}
+
+	static void printLoadingDots(string message = "Loading", size_t dots = 3)
+	{
+		static size_t dotCount = 0;
+		write("\r" ~ message ~ " " ~ ".".replicate(
+				(dotCount % (dots + 1))) ~
+				" ".replicate(dots - (dotCount % (dots + 1))) ~ "   ");
+		stdout.flush();
+		dotCount++;
+	}
+
+	static void printBreadcrumb(string[] path, string separator = " > ")
+	{
+		foreach (i, item; path)
+		{
+			if (i == cast(int) path.length - 1)
+				write(colorize(item, Color.BRIGHT_WHITE));
+			else
+				write(colorize(item, Color.BRIGHT_BLACK));
+
+			if (i < cast(int) path.length - 1)
+				write(colorize(separator, Color.BRIGHT_BLACK));
+		}
+		writeln();
+	}
 
 	static void printSeparator(string sep = "─", size_t length = defaultLineLength, Color color = Color
 			.RESET)
@@ -502,6 +833,36 @@ class App
 {
 	void run()
 	{
+		ArkTerm.log(LogLevel.INFO, "Enhanced Application starting...");
+
+		ArkTerm.printBreadcrumb(["Home", "Projects", "MyApp", "src"]);
+		writeln();
+
+		ArkTerm.printToast("Connection established successfully", LogLevel.SUCCESS);
+		writeln();
+
+		writeln("System Information:");
+		string[][] sysInfo = [
+			["OS", "CPU", "Memory"],
+			["Linux", "Intel i7", "16GB"],
+			["Version", "Usage", "Available"],
+			["Ubuntu 22.04", "45%", "8.8GB"]
+		];
+		size_t[] colWidths = [15, 12, 10];
+		ArkTerm.printColumns(sysInfo, colWidths);
+		writeln();
+
+		ArkTerm.printGauge(75, 0, 100, 25, "CPU Usage", Color.YELLOW);
+		ArkTerm.printGauge(45, 0, 100, 25, "Memory", Color.GREEN);
+		ArkTerm.printGauge(90, 0, 100, 25, "Disk", Color.RED);
+		writeln();
+
+		double[] cpuData = [
+			23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
+		];
+		ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
+		writeln();
+
 		ArkTerm.log(LogLevel.INFO, "Application starting...");
 		ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
 		ArkTerm.printKeyValue("Version", "1.0.0");
