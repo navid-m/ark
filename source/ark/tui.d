@@ -19,7 +19,7 @@ final class TerminalOut
 {
 	private static immutable defaultLineLength = 50;
 
-	static void initialize()
+	static this()
 	{
 		version (Windows)
 			SetConsoleOutputCP(65_001);
@@ -183,7 +183,6 @@ class App
 {
 	void run()
 	{
-		TerminalOut.initialize();
 		TerminalOut.writeBlock("ya did it");
 		readln;
 		TerminalOut.writeBlock("ya did it");
