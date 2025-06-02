@@ -151,47 +151,87 @@ final class ArkTerm
 		}
 	}
 
-	static void printTree(string[string] tree, string root = "", size_t level = 0, bool[] isLast = [
-	])
+	static void printTree(
+		string[string] tree,
+		string root = "",
+		size_t level = 0,
+		bool[] isLast = []
+	)
 	{
-		string indent = "";
-		foreach (i; 0 .. level)
+		if (level == 0)
 		{
-			if (i < isLast.length && isLast[i])
-				indent ~= "    ";
-			else
-				indent ~= "│   ";
+			writeln("root");
 		}
 
-		string prefix = level == 0 ? "" : (isLast.length > 0 && isLast[$ - 1] ? "└── "
-				: "├── ");
-		writeln(indent ~ prefix ~ (root.length > 0 ? root : "root"));
+		string[] paths;
 
-		auto keys = tree.keys.sort();
-		int i = 0;
+		foreach (path, value; tree)
+			paths ~= path;
 
-		foreach (key; keys)
+		paths.sort();
+
+		string[string] children;
+		string[] immediateFiles;
+
+		foreach (path; paths)
 		{
-			bool last = (i == cast(int) keys.length - 1);
-			auto newIsLast = isLast ~ last;
-
-			if (key.startsWith(root ~ "/") || (root.length == 0 && key.indexOf('/') == -1))
+			string relativePath = path;
+			if (root.length > 0)
 			{
-				string display = root.length == 0 ? key : key[root.length + 1 .. $];
-				if (display.indexOf('/') == -1)
+				if (!path.startsWith(root ~ "/"))
+					continue;
+				relativePath = path[root.length + 1 .. $];
+			}
+
+			auto slashIndex = relativePath.indexOf('/');
+			if (slashIndex == -1)
+				immediateFiles ~= relativePath;
+			else
+			{
+				string dirName = relativePath[0 .. slashIndex];
+				if (dirName !in children)
 				{
-					string itemIndent = "";
-					foreach (j; 0 .. level + 1)
-					{
-						if (j < newIsLast.length && newIsLast[j])
-							itemIndent ~= "    ";
-						else
-							itemIndent ~= "│   ";
-					}
-					string itemPrefix = last ? "└── " : "├── ";
-					writeln(itemIndent ~ itemPrefix ~ display ~ " = " ~ tree[key]);
+					children[dirName] = "";
 				}
 			}
+		}
+
+		foreach (i, fileName; immediateFiles)
+		{
+			string indent = "";
+			foreach (j; 0 .. level)
+			{
+				if (j < isLast.length && isLast[j])
+					indent ~= "    ";
+				else
+					indent ~= "│   ";
+			}
+
+			bool isLastItem = (i == cast(int) immediateFiles.length - 1) && (children.length == 0);
+			string prefix = isLastItem ? "└── " : "├── ";
+			string fullPath = root.length > 0 ? root ~ "/" ~ fileName : fileName;
+			writeln(indent ~ prefix ~ fileName ~ " = " ~ tree[fullPath]);
+		}
+
+		auto dirNames = children.keys.array.sort();
+		int i = 0;
+		foreach (dirName; dirNames)
+		{
+			string indent = "";
+			foreach (j; 0 .. level)
+			{
+				if (j < isLast.length && isLast[j])
+					indent ~= "    ";
+				else
+					indent ~= "│   ";
+			}
+
+			bool isLastDir = (i == cast(int) dirNames.length - 1);
+			string prefix = isLastDir ? "└── " : "├── ";
+			writeln(indent ~ prefix ~ dirName ~ "/");
+			string newRoot = root.length > 0 ? root ~ "/" ~ dirName : dirName;
+			auto newIsLast = isLast ~ isLastDir;
+			printTree(tree, newRoot, level + 1, newIsLast);
 			i++;
 		}
 	}
