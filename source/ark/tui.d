@@ -17,12 +17,20 @@ else
 
 final class TerminalOut
 {
-	static void printSeparator(string sep = "-", size_t length = 20)
+	private static immutable defaultLineLength = 50;
+
+	static void initialize()
+	{
+		version (Windows)
+			SetConsoleOutputCP(65_001);
+	}
+
+	static void printSeparator(string sep = "─", size_t length = defaultLineLength)
 	{
 		writeln(sep.replicate(length));
 	}
 
-	static void writeBlock(string text, string sep = "-", size_t length = 20)
+	static void writeBlock(string text, string sep = "─", size_t length = defaultLineLength)
 	{
 		printSeparator(sep, length);
 		write(text ~ "\n");
@@ -87,6 +95,7 @@ final class TUI
 	{
 		version (Windows)
 			SetConsoleOutputCP(65_001);
+
 		enableRawMode();
 		write("\033[?25l");
 	}
@@ -174,6 +183,7 @@ class App
 {
 	void run()
 	{
+		TerminalOut.initialize();
 		TerminalOut.writeBlock("ya did it");
 		readln;
 		TerminalOut.writeBlock("ya did it");
