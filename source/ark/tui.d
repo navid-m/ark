@@ -59,8 +59,8 @@ final class TerminalOut
 				null,
 				destOrigin,
 				&fill
-
 			);
+
 			COORD topLeft = COORD(0, csbi.srWindow.Top);
 			SetConsoleCursorPosition(hConsole, topLeft);
 		}
