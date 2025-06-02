@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Navid M"
+	],
+	"copyright": "Copyright © 2025, Navid M",
+	"description": "TUI library",
+	"license": "GPL-3.0-only",
+	"name": "ark"
+}

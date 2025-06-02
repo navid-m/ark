@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/ark
+ark.so
+ark.dylib
+ark.dll
+ark.a
+.vscode
+ark.lib
+ark-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
