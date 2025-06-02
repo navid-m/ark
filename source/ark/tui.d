@@ -15,7 +15,60 @@ else
 	import core.sys.posix.termios;
 }
 
-final class Terminal
+final class TerminalOut
+{
+	static void printSeparator(string sep = "-", size_t length = 20)
+	{
+		writeln(sep.replicate(length));
+	}
+
+	static void writeBlock(string text, string sep = "-", size_t length = 20)
+	{
+		printSeparator(sep, length);
+		write(text ~ "\n");
+		printSeparator();
+		write("\n");
+	}
+
+	static void clear()
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			writeln("\n");
+		}
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+		if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+		{
+			writeln("Failed to get console buffer info.");
+			return;
+		}
+
+		SMALL_RECT scrollRect = csbi.srWindow;
+		COORD destOrigin = COORD(0, cast(short)(csbi.srWindow.Top - 100));
+		CHAR_INFO fill;
+		fill.Char.AsciiChar = ' ';
+		fill.Attributes = csbi.wAttributes;
+
+		BOOL success = ScrollConsoleScreenBufferA(
+			hConsole,
+			&scrollRect,
+			null,
+			destOrigin,
+			&fill
+
+		);
+
+		if (!success)
+			writeln("Scroll failed: ", GetLastError());
+
+		COORD topLeft = COORD(0, csbi.srWindow.Top);
+		SetConsoleCursorPosition(hConsole, topLeft);
+	}
+}
+
+final class TUI
 {
 	version (Windows)
 	{
@@ -29,6 +82,8 @@ final class Terminal
 
 	this()
 	{
+		version (Windows)
+			SetConsoleOutputCP(65_001);
 		enableRawMode();
 		write("\033[?25l");
 	}
@@ -63,13 +118,9 @@ final class Terminal
 	void disableRawMode()
 	{
 		version (Windows)
-		{
 			SetConsoleMode(hIn, originalMode);
-		}
 		else
-		{
 			tcsetattr(0, TCSAFLUSH, &origTerm);
-		}
 	}
 
 	char readKey()
@@ -118,38 +169,12 @@ final class Terminal
 
 class App
 {
-	Terminal term;
-
-	this()
-	{
-		term = new Terminal();
-	}
-
 	void run()
 	{
-		version (Windows)
-			SetConsoleOutputCP(65_001);
-
-		bool running = true;
-
-		while (running)
-		{
-			render();
-			auto key = term.readKey();
-			if (key == 'q')
-			{
-				running = false;
-			}
-		}
-	}
-
-	void render()
-	{
-		term.clear();
-		term.drawBox(5, 3, 30, 10, "Cross-Platform TUI");
-		term.moveTo(6, 7);
-		write("Press 'q' to quit.");
-		stdout.flush();
+		TerminalOut.writeBlock("ya did it");
+		readln;
+		TerminalOut.writeBlock("ya did it");
+		readln;
 	}
 }
 
