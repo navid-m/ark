@@ -18,25 +18,19 @@ template ArkComponents()
         {
             foreach (i, cell; row)
             {
-                if (
-                    i < colWidths
-                    .length)
-                    colWidths[i] = max(colWidths[i], cell
-                            .length);
+                if (i < colWidths.length)
+                    colWidths[i] = max(colWidths[i], cell.length);
             }
         }
 
         write("┌");
         foreach (i, width; colWidths)
         {
-            write(
-                "─".replicate(
-                    width + 2));
-            write(i == cast(
-                    int) colWidths.length - 1 ? "┐" : "┬");
+            write("─".replicate(width + 2));
+            write(i == cast(int) colWidths.length - 1 ? "┐" : "┬");
         }
 
-        writeln();
+        writeln;
         write("│");
 
         foreach (i, header; headers)
@@ -119,26 +113,22 @@ template ArkComponents()
             break;
         }
 
-        auto lines = message.split(
-            '\n');
-        auto maxLen = lines.map!(l => l.length)
-            .maxElement;
+        auto lines = message.split('\n');
+        auto maxLen = lines.map!(l => l.length).maxElement;
         auto boxWidth = max(width, maxLen + 6);
 
-        writeln(colorize("┌" ~ "─".replicate(
-                boxWidth - 2) ~ "┐", borderColor));
-        writeln(colorize("│", borderColor) ~ " " ~ colorize(icon, borderColor) ~ " " ~
-                format("%-*s", boxWidth - 6, lines[0]) ~ " " ~ colorize(
-                    "│", borderColor)
-        );
+        writeln(colorize("┌" ~ "─".replicate(boxWidth - 2) ~ "┐", borderColor));
+        writeln(colorize("│", borderColor) ~ " " ~ colorize(icon, borderColor) ~ " "
+                ~ format("%-*s", boxWidth - 6, lines[0]) ~ " " ~ colorize(
+                    "│", borderColor));
+
         foreach (line; lines[1 .. $])
         {
             writeln(colorize("│", borderColor) ~ "   " ~
                     format("%-*s", boxWidth - 6, line) ~ " " ~ colorize("│", borderColor));
         }
 
-        writeln(colorize("└" ~ "─".replicate(
-                boxWidth - 2) ~ "┘", borderColor));
+        writeln(colorize("└" ~ "─".replicate(boxWidth - 2) ~ "┘", borderColor));
     }
 
     static void printKeyValue(string key, string value, size_t keyWidth = 20, Color keyColor = Color
@@ -154,9 +144,7 @@ template ArkComponents()
     static void printSpinner(
         string message = "Loading...")
     {
-        write(
-            "\r" ~ colorize(spinnerChars[spinnerIndex], Color
-                .CYAN) ~ " " ~ message);
+        write("\r" ~ colorize(spinnerChars[spinnerIndex], Color.CYAN) ~ " " ~ message);
         stdout.flush();
         spinnerIndex = (
             spinnerIndex + 1) % spinnerChars
@@ -165,9 +153,7 @@ template ArkComponents()
 
     static void clearSpinner()
     {
-        write(
-            "\r" ~ " ".replicate(
-                80) ~ "\r");
+        write("\r" ~ " ".replicate(80) ~ "\r");
     }
 
     static void printStatus(string message, bool success, string details = "")
@@ -191,12 +177,9 @@ template ArkComponents()
     )
     {
         progress = progress < 0 ? 0 : (progress > 1 ? 1 : progress);
-        auto filled = cast(
-            size_t)(progress * width);
+        auto filled = cast(size_t)(progress * width);
         auto empty = width - filled;
-        auto bar = "█".replicate(
-            filled) ~ "░".replicate(
-            empty);
+        auto bar = "█".replicate(filled) ~ "░".replicate(empty);
         auto percentage = format("%.1f%%", progress * 100);
 
         write("\r" ~ prefix);
@@ -344,8 +327,14 @@ template ArkComponents()
         return result;
     }
 
-    static void printGauge(double value, double min = 0, double max = 100, size_t width = 30,
-        string label = "", Color color = Color.GREEN)
+    static void printGauge(
+        double value,
+        double min = 0,
+        double max = 100,
+        size_t width = 30,
+        string label = "",
+        Color color = Color.GREEN
+    )
     {
         value = value < min ? min : (value > max ? max : value);
         double percentage = (
@@ -359,13 +348,19 @@ template ArkComponents()
         writeln(display);
     }
 
-    static void printTextBox(string text, size_t width = 60, BorderStyle style = BorderStyle.SINGLE,
-        Color borderColor = Color.RESET, string title = "")
+    static void printTextBox(
+        string text,
+        size_t width = 60,
+        BorderStyle style = BorderStyle.SINGLE,
+        Color borderColor = Color.RESET,
+        string title = ""
+    )
     {
         auto borders = borderStyles[style];
         auto lines = text.split('\n');
         auto maxWidth = width - 3;
         string[] wrappedLines;
+
         foreach (line; lines)
         {
             if (line.length <= maxWidth)
@@ -429,7 +424,7 @@ template ArkComponents()
             if (c in blockChars)
             {
                 writeln(blockChars[c]);
-                writeln();
+                writeln;
             }
             else if (c == ' ')
             {
@@ -451,11 +446,10 @@ template ArkComponents()
                 if (idx < keys.length)
                 {
                     auto key = keys[idx];
-                    printTextBox(panels[key], 35, BorderStyle
-                            .SINGLE, Color.CYAN, key);
+                    printTextBox(panels[key], 35, BorderStyle.SINGLE, Color.CYAN, key);
                 }
             }
-            writeln();
+            writeln;
         }
     }
 
@@ -489,8 +483,10 @@ template ArkComponents()
                 .GREEN), minVal, maxVal);
     }
 
-    static void printCodeBlock(string code, string language = "", Color commentColor = Color
-            .BRIGHT_BLACK)
+    static void printCodeBlock(
+        string code,
+        string language = "",
+        Color commentColor = Color.BRIGHT_BLACK)
     {
         printTextBox("", 80, BorderStyle.SINGLE, Color.BRIGHT_BLACK, language
                 .length > 0 ? language.toUpper() : "CODE");
@@ -567,20 +563,18 @@ template ArkComponents()
             if (i == cast(int) path.length - 1)
                 write(colorize(item, Color.BRIGHT_WHITE));
             else
-                write(colorize(item, Color
-                        .BRIGHT_BLACK));
-
-            if (
-                i < cast(int) path.length - 1)
-                write(
-                    colorize(separator, Color
-                        .BRIGHT_BLACK));
+                write(colorize(item, Color.BRIGHT_BLACK));
+            if (i < cast(int) path.length - 1)
+                write(colorize(separator, Color.BRIGHT_BLACK));
         }
         writeln();
     }
 
-    static void printSeparator(string sep = "─", size_t length = defaultLineLength, Color color = Color
-            .RESET)
+    static void printSeparator(
+        string sep = "─",
+        size_t length = defaultLineLength,
+        Color color = Color.RESET
+    )
     {
         writeln(colorize(sep.replicate(length), color));
     }
