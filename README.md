@@ -2,7 +2,7 @@
 
 TUI and terminal component library.
 
-#### Screenshots
+#### Screenshot
 
 <img src="assets/screenshot.png">
 
