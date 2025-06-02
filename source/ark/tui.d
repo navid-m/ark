@@ -53,7 +53,7 @@ final class TerminalOut
 			fill.Char.AsciiChar = ' ';
 			fill.Attributes = csbi.wAttributes;
 
-			BOOL success = ScrollConsoleScreenBufferA(
+			ScrollConsoleScreenBufferA(
 				hConsole,
 				&scrollRect,
 				null,
