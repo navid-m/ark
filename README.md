@@ -2,7 +2,7 @@
 
 TUI and terminal component library.
 
-#### Components
+#### Components accessible via `ArkTerm`
 
 ```
 function drawLineGraph
