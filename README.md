@@ -2,7 +2,7 @@
 
 TUI and terminal component library.
 
-Line charts, bar charts, pie charts, more or less everything for data visualization and CLIs.
+Line charts, bar charts, pie charts, more or less everything for data visualization, TUIs and CLIs.
 
 #### Components accessible via `ArkTerm`
 
