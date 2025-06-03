@@ -56,8 +56,12 @@ final class ArkTerm
 	mixin ArkStyle!();
 	mixin ArkComponents!();
 
-	static void writeBlock(string text, string sep = "─", size_t length = defaultLineLength, Color color = Color
-			.RESET)
+	static void writeBlock(
+		string text,
+		string sep = "─",
+		size_t length = defaultLineLength,
+		Color color = Color.RESET
+	)
 	{
 		printSeparator(sep, length, color);
 		write(text ~ "\n");
