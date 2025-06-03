@@ -862,6 +862,98 @@ template ArkComponents()
     }
 
     /** 
+     * Draw a horizontal breakdown chart.
+     *
+     * Params:
+     *   labels      = Labels for each category
+     *   values      = Values for each category
+     *   width       = Total width of the breakdown bar
+     *   title       = Optional title for the chart
+     *   colors      = Colors for each category 
+     *   legendStyle = DOT or TABLE format
+     */
+    static void drawBreakdownChart(
+        string[] labels,
+        double[] values,
+        size_t width = 60,
+        string title = "",
+        Color[] colors = [],
+        LegendStyle legendStyle = LegendStyle.DOT
+    )
+    {
+        import std.algorithm : sum, maxElement, map;
+
+        if (labels.length == 0 || values.length == 0 || labels.length != values.length)
+            return;
+
+        if (colors.length == 0)
+        {
+            colors = [
+                Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.MAGENTA,
+                Color.CYAN, Color.BRIGHT_RED, Color.BRIGHT_GREEN,
+                Color.BRIGHT_YELLOW
+            ];
+        }
+
+        auto total = values.sum;
+        if (total == 0)
+            return;
+
+        if (title.length > 0)
+        {
+            drawSeparator("─", title.length, Color.BRIGHT_BLACK);
+            writeln(colorize(title, Color.BRIGHT_WHITE));
+            drawSeparator("─", title.length, Color.BRIGHT_BLACK);
+        }
+
+        size_t[] segments;
+        double[] proportions;
+
+        foreach (val; values)
+        {
+            double pct = val / total;
+            proportions ~= pct;
+            segments ~= cast(size_t)(pct * width);
+        }
+
+        size_t used = segments.sum;
+        if (used < width)
+            segments[segments.maxIndex] += width - used;
+
+        foreach (i, seg; segments)
+        {
+            string block = "█".replicate(seg);
+            write(colorize(block, colors[i % colors.length]));
+        }
+
+        writeln;
+        drawSeparator("─", width, Color.BRIGHT_BLACK);
+        if (legendStyle == LegendStyle.TABLE)
+        {
+            auto labelWidth = labels.map!(l => l.length).maxElement;
+            foreach (i, label; labels)
+            {
+                auto percentage = proportions[i] * 100;
+                string sample = colorize("██", colors[i % colors.length]);
+                writef("%s %-*s │ %5.1f%% │ %8.2f\n",
+                    sample, labelWidth, label, percentage, values[i]
+                );
+            }
+        }
+        else if (legendStyle == LegendStyle.DOT)
+        {
+            foreach (i, label; labels)
+            {
+                auto pct = proportions[i] * 100;
+                string dot = colorize("●", colors[i % colors.length]);
+                writef("%s %s %.1f%% ", dot, label, pct);
+            }
+        }
+        writeln;
+        drawSeparator("─", width, Color.BRIGHT_BLACK);
+    }
+
+    /** 
      * Draw a pie chart.
      *
      * Params:

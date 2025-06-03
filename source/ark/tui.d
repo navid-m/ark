@@ -362,7 +362,7 @@ unittest
 			foreach (i; 0 .. 301)
 			{
 				ArkTerm.drawProgress(i / 200.0, 10, "", Color.GREEN);
-				Thread.sleep(100.nsecs);
+				Thread.sleep(99.nsecs);
 			}
 
 			writeln;
@@ -470,6 +470,12 @@ unittest
 			double[] amounts = [1200, 400, 300, 200, 500];
 
 			ArkTerm.drawPieChart(categories, amounts, 10, "Monthly Budget ($)", true);
+			ArkTerm.drawBreakdownChart(
+				["Ruby", "CSS", "JavaScript", "Other"],
+				[50.0, 20.0, 15.0, 15.0],
+				60,
+				"Repo Language Breakdown"
+			);
 		}
 	}
 

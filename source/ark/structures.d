@@ -53,6 +53,12 @@ template Structures()
         ASCII
     }
 
+    enum LegendStyle
+    {
+        TABLE,
+        DOT
+    }
+
     struct BorderChars
     {
         string topLeft, topRight, bottomLeft, bottomRight;
