@@ -7,12 +7,9 @@ import ark.structures;
 import core.thread;
 import std.algorithm;
 import std.array;
-import std.conv;
 import std.stdio;
 import std.string;
 import std.datetime;
-import std.format;
-import std.math;
 
 version (Windows)
 {
