@@ -207,7 +207,7 @@ final class ArkTUI
 		}
 		else
 		{
-			auto res = read(0, &c, 1);
+			read(0, &c, 1);
 		}
 		return c;
 	}
