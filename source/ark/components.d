@@ -101,28 +101,23 @@ mixin template ArkComponents()
         final switch (level)
         {
         case LogLevel.INFO:
-            borderColor = Color
-                .BLUE;
+            borderColor = Color.BLUE;
             icon = "ⓘ";
             break;
         case LogLevel.SUCCESS:
-            borderColor = Color
-                .GREEN;
+            borderColor = Color.GREEN;
             icon = "✓";
             break;
         case LogLevel.WARNING:
-            borderColor = Color
-                .YELLOW;
+            borderColor = Color.YELLOW;
             icon = "⚠";
             break;
         case LogLevel.ERROR:
-            borderColor = Color
-                .RED;
+            borderColor = Color.RED;
             icon = "✗";
             break;
         case LogLevel.DEBUG:
-            borderColor = Color
-                .MAGENTA;
+            borderColor = Color.MAGENTA;
             icon = "🐛";
             break;
         }
@@ -256,115 +251,6 @@ mixin template ArkComponents()
             }
             writeln;
         }
-    }
-
-    static string drawTree(
-        string[string] tree,
-        string root = "",
-        size_t level = 0,
-        bool[] isLast = [],
-        bool onlyReturn = false
-    )
-    {
-        string result = "";
-
-        if (level == 0)
-        {
-            result ~= "root\n";
-            if (!onlyReturn)
-            {
-                write("root\n");
-            }
-        }
-
-        string[] paths;
-
-        foreach (path, value; tree)
-        {
-            paths ~= path;
-        }
-
-        paths.sort();
-
-        string[string] children;
-        string[] immediateFiles;
-
-        foreach (path; paths)
-        {
-            string relativePath = path;
-            if (root.length > 0)
-            {
-                if (!path.startsWith(root ~ "/"))
-                    continue;
-                relativePath = path[root.length + 1 .. $];
-            }
-
-            auto slashIndex = relativePath.indexOf('/');
-            if (slashIndex == -1)
-            {
-                immediateFiles ~= relativePath;
-            }
-            else
-            {
-                string dirName = relativePath[0 .. slashIndex];
-                if (dirName !in children)
-                {
-                    children[dirName] = "";
-                }
-            }
-        }
-
-        foreach (i, fileName; immediateFiles)
-        {
-            string indent = "";
-            foreach (j; 0 .. level)
-            {
-                if (j < isLast.length && isLast[j])
-                    indent ~= "    ";
-                else
-                    indent ~= "│   ";
-            }
-
-            bool isLastItem = (i == cast(int) immediateFiles.length - 1) && (children.length == 0);
-            string prefix = isLastItem ? "└── " : "├── ";
-            string fullPath = root.length > 0 ? root ~ "/" ~ fileName : fileName;
-            string line = indent ~ prefix ~ fileName ~ " = " ~ tree[fullPath] ~ "\n";
-            result ~= line;
-
-            if (!onlyReturn)
-                write(line);
-        }
-
-        auto dirNames = children.keys.array.sort();
-        int i = 0;
-
-        foreach (dirName; dirNames)
-        {
-            string indent = "";
-            foreach (j; 0 .. level)
-            {
-                if (j < isLast.length && isLast[j])
-                    indent ~= "    ";
-                else
-                    indent ~= "│   ";
-            }
-
-            bool isLastDir = (i == cast(int) dirNames.length - 1);
-            string prefix = isLastDir ? "└── " : "├── ";
-            string line = indent ~ prefix ~ dirName ~ "/\n";
-            result ~= line;
-
-            if (!onlyReturn)
-                write(line);
-
-            string newRoot = root.length > 0 ? root ~ "/" ~ dirName : dirName;
-            auto newIsLast = isLast ~ isLastDir;
-            string subResult = drawTree(tree, newRoot, level + 1, newIsLast, onlyReturn);
-            result ~= subResult;
-            i++;
-        }
-
-        return result;
     }
 
     static void drawGauge(
