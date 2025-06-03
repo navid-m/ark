@@ -159,12 +159,11 @@ template ArkComponents()
         string symbol = success ? "✓" : "✗";
         Color color = success ? Color.GREEN : Color.RED;
         write(colorize(symbol, color) ~ " " ~ message);
+
         if (details.length > 0)
-        {
-            write(colorize(" (" ~ details ~ ")", Color
-                    .BRIGHT_BLACK));
-        }
-        writeln();
+            write(colorize(" (" ~ details ~ ")", Color.BRIGHT_BLACK));
+
+        writeln;
     }
 
     static void printProgress(
