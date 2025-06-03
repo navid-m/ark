@@ -675,7 +675,7 @@ template ArkComponents()
     }
 
     /** 
-     * Draw a line graph using ASCII characters.
+     * Draw a line graph.
      *
      * Params:
      *   data       = Array of data points to plot
@@ -862,7 +862,7 @@ template ArkComponents()
     }
 
     /** 
-     * Draw a pie chart using ASCII characters.
+     * Draw a pie chart.
      *
      * Params:
      *   labels = Labels for each slice
