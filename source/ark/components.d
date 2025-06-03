@@ -451,9 +451,11 @@ template ArkComponents()
     {
         if (data.length == 0)
             return;
+
         auto minVal = data.minElement;
         auto maxVal = data.maxElement;
         auto range = maxVal - minVal;
+
         if (range == 0)
             range = 1;
 
@@ -462,6 +464,7 @@ template ArkComponents()
             "▅", "▆", "▇", "█"
         ];
         string sparkline = "";
+
         foreach (val; data)
         {
             auto normalized = (val - minVal) / range;
@@ -473,8 +476,8 @@ template ArkComponents()
 
         if (label.length > 0)
             writef("%s: ", label);
-        writef("%s (%.2f - %.2f)\n", colorize(sparkline, Color
-                .GREEN), minVal, maxVal);
+
+        writef("%s (%.2f - %.2f)\n", colorize(sparkline, Color.GREEN), minVal, maxVal);
     }
 
     static void printCodeBlock(
@@ -482,8 +485,10 @@ template ArkComponents()
         string language = "",
         Color commentColor = Color.BRIGHT_BLACK)
     {
-        printTextBox("", 80, BorderStyle.SINGLE, Color.BRIGHT_BLACK, language
-                .length > 0 ? language.toUpper() : "CODE");
+        printTextBox(
+            "", 80, BorderStyle.SINGLE, Color.BRIGHT_BLACK, language.length > 0 ? language.toUpper()
+                : "CODE"
+        );
 
         foreach (line; code.split('\n'))
         {
