@@ -936,14 +936,10 @@ template ArkComponents()
                     if (angle < 0)
                         angle += 2 * PI;
 
-                    // Find which slice this point belongs to
                     foreach (i; 0 .. values.length)
                     {
                         if (angle >= angles[i] && angle < angles[i + 1])
                         {
-                            auto colorIndex = i % colors.length;
-
-                            // Use different characters for different slices
                             wchar[] chars = [
                                 '█', '▓', '▒', '░', '▪', '▫', '■',
                                 '□'
@@ -983,7 +979,6 @@ template ArkComponents()
                             }
                         }
                     }
-
                     if (sliceIndex >= 0)
                     {
                         auto colorIndex = sliceIndex % colors.length;
