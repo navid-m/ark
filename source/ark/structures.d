@@ -23,7 +23,6 @@ enum Color : string
 
 template Structures()
 {
-
     enum Style : string
     {
         RESET = "\033[0m",
