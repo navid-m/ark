@@ -1,4 +1,4 @@
-### Ark
+## Ark
 
 TUI and terminal component library.
 
