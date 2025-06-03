@@ -2,6 +2,14 @@ module ark.components;
 
 template ArkComponents()
 {
+    /** 
+     * Print a table.
+     *
+     * Params:
+     *   headers = Table headers
+     *   rows = Rows of the table
+     *   minColWidth = Minimum column width per column
+     */
     static void printTable(string[] headers, string[][] rows, size_t minColWidth = 10)
     {
         if (headers.length == 0)
@@ -77,6 +85,14 @@ template ArkComponents()
         writeln();
     }
 
+    /** 
+     * Print some alert.
+     *
+     * Params:
+     *   message = The message of the alert
+     *   level = Log level
+     *   width = Width of containing box
+     */
     static void printAlert(string message, LogLevel level = LogLevel.INFO, size_t width = 60)
     {
         Color borderColor;
@@ -129,8 +145,21 @@ template ArkComponents()
         writeln(colorize("└" ~ "─".replicate(boxWidth - 2) ~ "┘", borderColor));
     }
 
-    static void printKeyValue(string key, string value, size_t keyWidth = 20, Color keyColor = Color
-            .CYAN)
+    /** 
+     * Print key value pairs in a formatted TSV way.
+     *
+     * Params:
+     *   key = The key
+     *   value = The value
+     *   keyWidth = Width of key element
+     *   keyColor = The color to use for the key element
+     */
+    static void printKeyValue(
+        string key,
+        string value,
+        size_t keyWidth = 20,
+        Color keyColor = Color.CYAN
+    )
     {
         writef(
             "%s: %s\n",
