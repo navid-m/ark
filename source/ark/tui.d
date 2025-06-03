@@ -475,6 +475,10 @@ unittest
 				60,
 				"Repo Language Breakdown"
 			);
+
+			ArkTerm.drawLineGraph(datax, 60, 15, "Monthly Sales", labels, true, Color.GREEN, scatter:
+				true);
+
 		}
 	}
 

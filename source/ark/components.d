@@ -682,20 +682,6 @@ template ArkComponents()
         }
     }
 
-    /** 
-     * Draw a line graph.
-     *
-     * Params:
-     *   data       = Array of data points to plot
-     *   width      = Width of the graph in characters
-     *   height     = Height of the graph in characters
-     *   title      = Optional title for the graph
-     *   xLabels    = Optional labels for x-axis points
-     *   showGrid   = Whether to show grid lines
-     *   lineColor  = Color of the line
-     *   gridColor  = Color of the grid
-     *   showYAxis  = Whether to show Y-axis with values
-     */
     static void drawLineGraph(
         double[] data,
         size_t width = 60,
@@ -705,7 +691,8 @@ template ArkComponents()
         bool showGrid = true,
         Color lineColor = Color.CYAN,
         Color gridColor = Color.BRIGHT_BLACK,
-        bool showYAxis = true
+        bool showYAxis = true,
+        bool scatter = false
     )
     {
         import std.math : abs;
@@ -723,7 +710,6 @@ template ArkComponents()
         auto minVal = data.minElement;
         auto maxVal = data.maxElement;
         auto range = maxVal - minVal;
-
         if (range == 0)
             range = 1;
 
@@ -768,42 +754,46 @@ template ArkComponents()
             }
         }
 
-        for (size_t i = 0; i < cast(int) data.length - 1; i++)
+        if (!scatter)
         {
-            auto x1 = cast(size_t)((cast(double) i / (cast(int) data.length - 1)) * (graphWidth - 1));
-            auto x2 = cast(size_t)((cast(double)(i + 1) / (cast(int) data.length - 1)) * (
-                    graphWidth - 1));
-            auto y1 = cast(size_t)((1.0 - (data[i] - minVal) / range) * (height - 1));
-            auto y2 = cast(size_t)((1.0 - (data[i + 1] - minVal) / range) * (height - 1));
-            auto dx = cast(int) x2 - cast(int) x1;
-            auto dy = cast(int) y2 - cast(int) y1;
-            auto steps = max(abs(dx), abs(dy));
-
-            if (steps == 0)
-                steps = 1;
-
-            auto xIncrement = cast(double) dx / steps;
-            auto yIncrement = cast(double) dy / steps;
-            auto x = cast(double) x1;
-            auto y = cast(double) y1;
-
-            for (int step = 0; step <= steps; step++)
+            for (size_t i = 0; i < cast(int) data.length - 1; i++)
             {
-                auto plotX = cast(size_t) x;
-                auto plotY = cast(size_t) y;
+                auto x1 = cast(size_t)((cast(double) i / (cast(int) data.length - 1)) * (
+                        graphWidth - 1));
+                auto x2 = cast(size_t)(
+                    (cast(double)(i + 1) / (cast(int) data.length - 1)) * (graphWidth - 1));
+                auto y1 = cast(size_t)((1.0 - (data[i] - minVal) / range) * (height - 1));
+                auto y2 = cast(size_t)((1.0 - (data[i + 1] - minVal) / range) * (height - 1));
+                auto dx = cast(int) x2 - cast(int) x1;
+                auto dy = cast(int) y2 - cast(int) y1;
+                auto steps = max(abs(dx), abs(dy));
 
-                if (plotX < graphWidth && plotY < height)
+                if (steps == 0)
+                    steps = 1;
+
+                auto xIncrement = cast(double) dx / steps;
+                auto yIncrement = cast(double) dy / steps;
+                auto x = cast(double) x1;
+                auto y = cast(double) y1;
+
+                for (int step = 0; step <= steps; step++)
                 {
-                    if (abs(xIncrement) > abs(yIncrement))
-                        grid[plotY][plotX] = '─';
-                    else if (abs(yIncrement) > abs(xIncrement))
-                        grid[plotY][plotX] = '│';
-                    else
-                        grid[plotY][plotX] = '●';
-                }
+                    auto plotX = cast(size_t) x;
+                    auto plotY = cast(size_t) y;
 
-                x += xIncrement;
-                y += yIncrement;
+                    if (plotX < graphWidth && plotY < height)
+                    {
+                        if (abs(xIncrement) > abs(yIncrement))
+                            grid[plotY][plotX] = '─';
+                        else if (abs(yIncrement) > abs(xIncrement))
+                            grid[plotY][plotX] = '│';
+                        else
+                            grid[plotY][plotX] = '●';
+                    }
+
+                    x += xIncrement;
+                    y += yIncrement;
+                }
             }
         }
 
