@@ -5,6 +5,7 @@ TUI and terminal component library.
 #### Components
 
 ```
+function drawLineGraph
 function drawTable
 function drawAlert
 function drawKeyValue
