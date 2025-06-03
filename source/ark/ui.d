@@ -460,6 +460,21 @@ unittest
 			ArkTerm.drawLineGraph(datax, 60, 15, "Monthly Sales", labels, true, Color.GREEN, scatter:
 				true);
 
+			FlowNode[] nodes = [
+				FlowNode("start", "Start", 5, 2),
+				FlowNode("process", "Process Data", 5, 8),
+				FlowNode("decision", "Valid?", 5, 14),
+				FlowNode("end", "End", 25, 14)
+			];
+
+			FlowConnection[] connections = [
+				FlowConnection("start", "process", "down"),
+				FlowConnection("process", "decision", "down"),
+				FlowConnection("decision", "end", "right")
+			];
+
+			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
+
 		}
 	}
 

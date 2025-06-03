@@ -287,4 +287,187 @@ template ArkGraphs()
 
         return result;
     }
+
+    static void drawFlowDiagram(
+        FlowNode[] nodes,
+        FlowConnection[] connections,
+        size_t width = 80,
+        size_t height = 20,
+        Color boxColor = Color.CYAN,
+        Color arrowColor = Color.BRIGHT_BLACK
+    )
+    {
+        if (nodes.length == 0)
+            return;
+
+        auto grid = new string[][](height, width);
+        foreach (ref row; grid)
+        {
+            row[] = " ";
+        }
+
+        foreach (ref node; nodes)
+        {
+            if (node.width == 0)
+                node.width = max(node.text.length + 4, 8);
+        }
+
+        foreach (conn; connections)
+        {
+            auto fromNode = nodes.find!(n => n.id == conn.fromId);
+            auto toNode = nodes.find!(n => n.id == conn.toId);
+
+            if (fromNode.empty || toNode.empty)
+                continue;
+
+            auto from = fromNode[0];
+            auto to = toNode[0];
+
+            drawFlowGraphConnection(grid, from, to, conn.direction, width, height);
+        }
+
+        foreach (node; nodes)
+        {
+            drawFlowGraphBox(grid, node, width, height);
+        }
+
+        foreach (y; 0 .. height)
+        {
+            string line = "";
+            foreach (x; 0 .. width)
+            {
+                string cell = grid[y][x];
+
+                if (cell == "┌" || cell == "┐" || cell == "└" || cell == "┘" ||
+                    cell == "│" || cell == "─")
+                {
+                    line ~= colorize(cell, boxColor);
+                }
+                else if (cell == "→" || cell == "↓" || cell == "←" || cell == "↑" ||
+                    cell == "┼" || cell == "┬" || cell == "┴" || cell == "├" || cell == "┤")
+                {
+                    line ~= colorize(cell, arrowColor);
+                }
+                else
+                {
+                    line ~= cell;
+                }
+            }
+            writeln(line);
+        }
+    }
+
+    private static void drawFlowGraphBox(string[][] grid, FlowNode node, size_t maxWidth, size_t maxHeight)
+    {
+        size_t boxHeight = 3;
+
+        if (node.x >= maxWidth || node.y >= maxHeight ||
+            node.x + node.width >= maxWidth || node.y + boxHeight >= maxHeight)
+            return;
+
+        grid[node.y][node.x] = "┌";
+        foreach (i; 1 .. node.width - 1)
+            grid[node.y][node.x + i] = "─";
+        grid[node.y][node.x + node.width - 1] = "┐";
+        grid[node.y + 1][node.x] = "│";
+
+        size_t textStart = node.x + 1 + (node.width - 2 - node.text.length) / 2;
+        foreach (i, c; node.text)
+        {
+            if (textStart + i < node.x + node.width - 1)
+                grid[node.y + 1][textStart + i] = [c];
+        }
+
+        foreach (i; 1 .. node.width - 1)
+        {
+            if (grid[node.y + 1][node.x + i] == " ")
+                grid[node.y + 1][node.x + i] = " ";
+        }
+        grid[node.y + 1][node.x + node.width - 1] = "│";
+
+        grid[node.y + 2][node.x] = "└";
+        foreach (i; 1 .. node.width - 1)
+            grid[node.y + 2][node.x + i] = "─";
+        grid[node.y + 2][node.x + node.width - 1] = "┘";
+    }
+
+    private static void drawFlowGraphConnection(
+        string[][] grid,
+        FlowNode from,
+        FlowNode to,
+        string direction,
+        size_t maxWidth,
+        size_t maxHeight
+    )
+    {
+        size_t fromX, fromY, toX, toY;
+
+        switch (direction)
+        {
+        case "down":
+            fromX = from.x + from.width / 2;
+            fromY = from.y + 3;
+            toX = to.x + to.width / 2;
+            toY = to.y;
+            break;
+        case "right":
+            fromX = from.x + from.width;
+            fromY = from.y + 1;
+            toX = to.x;
+            toY = to.y + 1;
+            break;
+        case "up":
+            fromX = from.x + from.width / 2;
+            fromY = from.y;
+            toX = to.x + to.width / 2;
+            toY = to.y + 3;
+            break;
+        case "left":
+            fromX = from.x;
+            fromY = from.y + 1;
+            toX = to.x + to.width;
+            toY = to.y + 1;
+            break;
+        default:
+            return;
+        }
+
+        if (direction == "down" || direction == "up")
+        {
+            size_t startY = min(fromY, toY);
+            size_t endY = max(fromY, toY);
+
+            if (fromX < maxWidth)
+            {
+                foreach (y; startY .. endY)
+                {
+                    if (y < maxHeight && grid[y][fromX] == " ")
+                        grid[y][fromX] = "│";
+                }
+                if (direction == "down" && toY < maxHeight && toX < maxWidth)
+                    grid[toY][toX] = "↓";
+                else if (direction == "up" && toY < maxHeight && toX < maxWidth)
+                    grid[toY][toX] = "↑";
+            }
+        }
+        else if (direction == "right" || direction == "left")
+        {
+            size_t startX = min(fromX, toX);
+            size_t endX = max(fromX, toX);
+
+            if (fromY < maxHeight)
+            {
+                foreach (x; startX .. endX)
+                {
+                    if (x < maxWidth && grid[fromY][x] == " ")
+                        grid[fromY][x] = "─";
+                }
+                if (direction == "right" && toY < maxHeight && toX < maxWidth)
+                    grid[toY][toX] = "→";
+                else if (direction == "left" && toY < maxHeight && toX < maxWidth)
+                    grid[toY][toX] = "←";
+            }
+        }
+    }
+
 }

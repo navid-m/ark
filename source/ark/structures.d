@@ -65,4 +65,19 @@ template Structures()
         string horizontal, vertical;
         string topJoin, bottomJoin, leftJoin, rightJoin, cross;
     }
+
+    struct FlowNode
+    {
+        string id;
+        string text;
+        size_t x, y;
+        size_t width = 0;
+    }
+
+    struct FlowConnection
+    {
+        string fromId;
+        string toId;
+        string direction = "down";
+    }
 }
