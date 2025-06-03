@@ -651,6 +651,7 @@ template ArkComponents()
         }
 
         auto maxValue = values.maxElement;
+
         if (maxValue <= 0)
             maxValue = 1;
 
