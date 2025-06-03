@@ -45,7 +45,7 @@ template ArkComponents()
             writef(" %-*s │", colWidths[i], header);
         }
 
-        writeln();
+        writeln;
         write("├");
 
         foreach (i, width; colWidths)
@@ -57,7 +57,7 @@ template ArkComponents()
                     int) colWidths.length - 1 ? "┤" : "┼");
         }
 
-        writeln();
+        writeln;
 
         foreach (row; rows)
         {
@@ -68,7 +68,7 @@ template ArkComponents()
                 string cell = i < row.length ? row[i] : "";
                 writef(" %-*s │", colWidths[i], cell);
             }
-            writeln();
+            writeln;
         }
 
         write("└");
@@ -82,7 +82,7 @@ template ArkComponents()
                     int) colWidths.length - 1 ? "┘" : "┴");
         }
 
-        writeln();
+        writeln;
     }
 
     /** 
@@ -239,7 +239,7 @@ template ArkComponents()
                 if (col < cast(int) columns.length - 1)
                     write(separator);
             }
-            writeln();
+            writeln;
         }
     }
 
@@ -594,7 +594,7 @@ template ArkComponents()
             if (i < cast(int) path.length - 1)
                 write(colorize(separator, Color.BRIGHT_BLACK));
         }
-        writeln();
+        writeln;
     }
 
     static void printSeparator(
