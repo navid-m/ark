@@ -175,12 +175,10 @@ final class ArkTUI
 	this()
 	{
 		version (Windows)
-			SetConsoleOutputCP(
-				65_001);
+			SetConsoleOutputCP(65_001);
 
 		enableRawMode();
-		write(
-			"\033[?25l");
+		write("\033[?25l");
 	}
 
 	~this()
