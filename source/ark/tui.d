@@ -448,8 +448,14 @@ unittest
 			);
 
 			ArkTerm.printAlert(tree);
+
 			writeln;
+
 			ArkTerm.log(LogLevel.SUCCESS, "Demo completed successfully");
+
+			writeln;
+
+			ArkTerm.printBarChart(["Some", "Value", "Here"], [1, 10, 20]);
 		}
 	}
 

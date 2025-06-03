@@ -620,4 +620,57 @@ template ArkComponents()
     {
         writeln(colorize(sep.replicate(length), color));
     }
+
+    /** 
+     * Print a horizontal bar chart.
+     *
+     * Params:
+     *   labels = Labels for each bar
+     *   values = Values for each bar
+     *   maxBarWidth = Maximum width of the bars
+     *   showValues = Whether to show values at the end of bars
+     *   barColor = Color of the bars
+     *   title = Optional title for the chart
+     */
+    static void printBarChart(
+        string[] labels,
+        double[] values,
+        size_t maxBarWidth = 40,
+        bool showValues = true,
+        Color barColor = Color.CYAN,
+        string title = ""
+    )
+    {
+        if (labels.length == 0 || values.length == 0 || labels.length != values.length)
+            return;
+
+        if (title.length > 0)
+        {
+            writeln(colorize(title, Color.BRIGHT_WHITE));
+            printSeparator("─", title.length, Color.BRIGHT_BLACK);
+        }
+
+        auto maxValue = values.maxElement;
+        if (maxValue <= 0)
+            maxValue = 1;
+
+        auto maxLabelWidth = labels.map!(l => l.length).maxElement;
+
+        foreach (i, label; labels)
+        {
+            auto value = values[i];
+            auto barLength = cast(size_t)((value / maxValue) * maxBarWidth);
+
+            writef("%-*s │", maxLabelWidth, label);
+            write(colorize("█".replicate(barLength), barColor));
+
+            if (showValues)
+            {
+                write(" ");
+                writef("%.1f", value);
+            }
+
+            writeln;
+        }
+    }
 }
