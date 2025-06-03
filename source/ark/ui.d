@@ -1,4 +1,4 @@
-module ark.tui;
+module ark.ui;
 
 import ark.style;
 import ark.components;
@@ -55,61 +55,6 @@ final class ArkTerm
 	mixin ArkStyle!();
 	mixin ArkComponents!();
 
-	static void writeBlock(
-		string text,
-		string sep = "─",
-		size_t length = defaultLineLength,
-		Color color = Color.RESET
-	)
-	{
-		drawSeparator(sep, length, color);
-		write(text ~ "\n");
-		drawSeparator(sep, length, color);
-		write("\n");
-	}
-
-	static void log(LogLevel level, string message)
-	{
-		auto timestamp = Clock.currTime.toISOExtString()[0 .. 19];
-		string levelStr;
-		Color levelColor;
-
-		final switch (level)
-		{
-		case LogLevel.INFO:
-			levelStr = "INFO ";
-			levelColor = Color.BLUE;
-			break;
-		case LogLevel.SUCCESS:
-			levelStr = "OK   ";
-			levelColor = Color.GREEN;
-			break;
-		case LogLevel.WARNING:
-			levelStr = "WARN ";
-			levelColor = Color.YELLOW;
-			break;
-		case LogLevel.ERROR:
-			levelStr = "ERROR";
-			levelColor = Color.RED;
-			break;
-		case LogLevel.DEBUG:
-			levelStr = "DEBUG";
-			levelColor = Color.MAGENTA;
-			break;
-		}
-
-		writef("[%s] %s %s\n",
-			colorize(timestamp, Color.BRIGHT_BLACK),
-			colorize(levelStr, levelColor),
-			message
-		);
-	}
-
-	static void drawIndented(string text, size_t level = 1, string indent = "  ")
-	{
-		writeln(indent.replicate(level) ~ text);
-	}
-
 	static void clear()
 	{
 		version (Windows)
@@ -153,6 +98,43 @@ final class ArkTerm
 		{
 			write("\033[2J\033[H");
 		}
+	}
+
+	static void log(LogLevel level, string message)
+	{
+		auto timestamp = Clock.currTime.toISOExtString()[0 .. 19];
+		string levelStr;
+		Color levelColor;
+
+		final switch (level)
+		{
+		case LogLevel.INFO:
+			levelStr = "INFO ";
+			levelColor = Color.BLUE;
+			break;
+		case LogLevel.SUCCESS:
+			levelStr = "OK   ";
+			levelColor = Color.GREEN;
+			break;
+		case LogLevel.WARNING:
+			levelStr = "WARN ";
+			levelColor = Color.YELLOW;
+			break;
+		case LogLevel.ERROR:
+			levelStr = "ERROR";
+			levelColor = Color.RED;
+			break;
+		case LogLevel.DEBUG:
+			levelStr = "DEBUG";
+			levelColor = Color.MAGENTA;
+			break;
+		}
+
+		writef("[%s] %s %s\n",
+			colorize(timestamp, Color.BRIGHT_BLACK),
+			colorize(levelStr, levelColor),
+			message
+		);
 	}
 }
 

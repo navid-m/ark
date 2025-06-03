@@ -1,3 +1,3 @@
 module ark;
 
-public import ark.tui;
+public import ark.ui;
