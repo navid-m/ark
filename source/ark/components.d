@@ -860,4 +860,185 @@ template ArkComponents()
 
         writeln;
     }
+
+    /** 
+     * Draw a pie chart using ASCII characters.
+     *
+     * Params:
+     *   labels = Labels for each slice
+     *   values = Values for each slice
+     *   radius = Radius of the pie chart
+     *   title = Optional title for the chart
+     *   showLegend = Whether to show legend with percentages
+     *   colors = Array of colors for each slice (cycles if fewer than slices)
+     */
+    /** 
+ * Draw a pie chart using ASCII characters.
+ *
+ * Params:
+ *   labels = Labels for each slice
+ *   values = Values for each slice
+ *   radius = Radius of the pie chart
+ *   title = Optional title for the chart
+ *   showLegend = Whether to show legend with percentages
+ *   colors = Array of colors for each slice (cycles if fewer than slices)
+ */
+    static void drawPieChart(
+        string[] labels,
+        double[] values,
+        size_t radius = 10,
+        string title = "",
+        bool showLegend = true,
+        Color[] colors = []
+    )
+    {
+        import std.math : PI, cos, sin, atan2, sqrt;
+        import std.conv;
+
+        if (labels.length == 0 || values.length == 0 || labels.length != values.length)
+            return;
+
+        if (colors.length == 0)
+        {
+            colors = [
+                Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW,
+                Color.MAGENTA, Color.CYAN, Color.BRIGHT_RED, Color.BRIGHT_GREEN
+            ];
+        }
+
+        if (title.length > 0)
+        {
+            writeln(colorize(title, Color.BRIGHT_WHITE));
+            drawSeparator("─", title.length, Color.BRIGHT_BLACK);
+        }
+
+        auto totalValue = values.sum;
+        if (totalValue <= 0)
+            return;
+
+        double[] angles = new double[values.length + 1];
+        angles[0] = 0;
+        foreach (i, value; values)
+        {
+            angles[i + 1] = angles[i] + (value / totalValue) * 2 * PI;
+        }
+
+        auto size = radius * 2 + 1;
+        wchar[][] grid = new wchar[][](size, size * 2);
+        foreach (ref row; grid)
+        {
+            row[] = ' ';
+        }
+
+        auto centerX = radius;
+        auto centerY = radius;
+
+        foreach (y; 0 .. size)
+        {
+            foreach (x; 0 .. size * 2)
+            {
+                auto dx = (cast(double) x / 2.0) - centerX;
+                auto dy = cast(double) y - centerY;
+                auto distance = sqrt(dx * dx + dy * dy);
+
+                if (distance <= radius)
+                {
+                    auto angle = atan2(dy, dx);
+                    if (angle < 0)
+                        angle += 2 * PI;
+
+                    // Find which slice this point belongs to
+                    foreach (i; 0 .. values.length)
+                    {
+                        if (angle >= angles[i] && angle < angles[i + 1])
+                        {
+                            auto colorIndex = i % colors.length;
+
+                            // Use different characters for different slices
+                            wchar[] chars = [
+                                '█', '▓', '▒', '░', '▪', '▫', '■',
+                                '□'
+                            ];
+                            auto charIndex = i % chars.length;
+                            grid[y][x] = chars[charIndex];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        foreach (y; 0 .. size)
+        {
+            foreach (x; 0 .. size * 2)
+            {
+                wchar ch = grid[y][x];
+                if (ch != ' ')
+                {
+                    int sliceIndex = -1;
+                    auto dx = (cast(double) x / 2.0) - centerX;
+                    auto dy = cast(double) y - centerY;
+                    auto distance = sqrt(dx * dx + dy * dy);
+
+                    if (distance <= radius)
+                    {
+                        auto angle = atan2(dy, dx);
+                        if (angle < 0)
+                            angle += 2 * PI;
+
+                        foreach (i; 0 .. values.length)
+                        {
+                            if (angle >= angles[i] && angle < angles[i + 1])
+                            {
+                                sliceIndex = cast(int) i;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (sliceIndex >= 0)
+                    {
+                        auto colorIndex = sliceIndex % colors.length;
+                        write(colorize(ch.to!string, colors[colorIndex]));
+                    }
+                    else
+                    {
+                        write(ch);
+                    }
+                }
+                else
+                {
+                    write(' ');
+                }
+            }
+            writeln;
+        }
+
+        writeln;
+
+        if (showLegend)
+        {
+            drawSeparator("─", 40, Color.BRIGHT_BLACK);
+            auto maxLabelWidth = labels.map!(l => l.length).maxElement;
+
+            foreach (i, label; labels)
+            {
+                auto percentage = (values[i] / totalValue) * 100;
+                auto colorIndex = i % colors.length;
+                wchar[] chars = [
+                    '█', '▓', '▒', '░', '▪', '▫', '■', '□'
+                ];
+                auto charIndex = i % chars.length;
+                string indicator = colorize(chars[charIndex].to!string
+                        ~ chars[charIndex].to!string, colors[colorIndex]);
+                writef("%s %-*s │ %6.1f%% │ %8.2f\n",
+                    indicator,
+                    maxLabelWidth,
+                    label,
+                    percentage,
+                    values[i]
+                );
+            }
+            drawSeparator("─", 40, Color.BRIGHT_BLACK);
+        }
+    }
 }
