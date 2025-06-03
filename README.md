@@ -5,25 +5,26 @@ TUI and terminal component library.
 #### Components
 
 ```
-function printTable
-function printAlert
-function printKeyValue
-function printSpinner
+function drawTable
+function drawAlert
+function drawKeyValue
+function drawSpinner
 function clearSpinner
-function printStatus
-function printProgress
-function printColumns
-function printTree
-function printGauge
-function printTextBox
-function printBanner
-function printDashboard
-function printSparkline
-function printCodeBlock
-function printToast
-function printLoadingDots
-function printBreadcrumb
-function printSeparator
+function drawStatus
+function drawProgress
+function drawColumns
+function drawTree
+function drawGauge
+function drawTextBox
+function drawBanner
+function drawDashboard
+function drawSparkline
+function drawCodeBlock
+function drawToast
+function drawLoadingDots
+function drawBreadcrumb
+function drawSeparator
+function drawBarChart
 ```
 
 #### Screenshot
