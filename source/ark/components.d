@@ -975,7 +975,7 @@ template ArkComponents()
     static void drawPieChart(
         string[] labels,
         double[] values,
-        size_t radius = 10,
+        size_t radius = 15,
         string title = "",
         bool showLegend = true,
         Color[] colors = []
