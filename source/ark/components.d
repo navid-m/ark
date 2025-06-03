@@ -2,11 +2,11 @@ module ark.components;
 
 mixin template ArkComponents()
 {
-    import ark.foundation;
+    import ark.foundations;
     import ark.charts;
     import ark.graphs;
 
-    mixin ark.foundation.ArkFoundationComponents!();
+    mixin ark.foundations.ArkFoundationComponents!();
     mixin ark.charts.ArkCharts!();
     mixin ark.graphs.ArkGraphs!();
 }

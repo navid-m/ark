@@ -1,4 +1,4 @@
-module ark.foundation;
+module ark.foundations;
 
 template ArkFoundationComponents()
 {
