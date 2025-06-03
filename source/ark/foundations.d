@@ -124,7 +124,7 @@ template ArkFoundationComponents()
         {
         case LogLevel.INFO:
             borderColor = Color.BLUE;
-            icon = "ⓘ";
+            icon = "ℹ";
             break;
         case LogLevel.SUCCESS:
             borderColor = Color.GREEN;
