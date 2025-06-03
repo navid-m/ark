@@ -10,7 +10,7 @@ template ArkComponents()
      *   rows = Rows of the table
      *   minColWidth = Minimum column width per column
      */
-    static void printTable(string[] headers, string[][] rows, size_t minColWidth = 10)
+    static void drawTable(string[] headers, string[][] rows, size_t minColWidth = 10)
     {
         if (headers.length == 0)
             return;
@@ -93,7 +93,7 @@ template ArkComponents()
      *   level = Log level
      *   width = Width of containing box
      */
-    static void printAlert(string message, LogLevel level = LogLevel.INFO, size_t width = 60)
+    static void drawAlert(string message, LogLevel level = LogLevel.INFO, size_t width = 60)
     {
         Color borderColor;
         string icon;
@@ -154,7 +154,7 @@ template ArkComponents()
      *   keyWidth = Width of key element
      *   keyColor = The color to use for the key element
      */
-    static void printKeyValue(
+    static void drawKeyValue(
         string key,
         string value,
         size_t keyWidth = 20,
@@ -174,7 +174,7 @@ template ArkComponents()
      * Params:
      *   message = Annotation to show on left hand side of spinner
      */
-    static void printSpinner(string message = "Loading...")
+    static void drawSpinner(string message = "Loading...")
     {
         write("\r" ~ colorize(spinnerChars[spinnerIndex], Color.CYAN) ~ " " ~ message);
         stdout.flush();
@@ -197,7 +197,7 @@ template ArkComponents()
      *   success = Success or not, will change icon based on this
      *   details = Details of status message to appear as subtitle
      */
-    static void printStatus(string message, bool success, string details = "")
+    static void drawStatus(string message, bool success, string details = "")
     {
         string symbol = success ? "✓" : "✗";
         Color color = success ? Color.GREEN : Color.RED;
@@ -209,7 +209,7 @@ template ArkComponents()
         writeln;
     }
 
-    static void printProgress(
+    static void drawProgress(
         double progress,
         size_t width = 40,
         string prefix = "",
@@ -227,7 +227,7 @@ template ArkComponents()
         write(" " ~ percentage);
     }
 
-    static void printColumns(string[][] columns, size_t[] widths = [], string separator = " │ ")
+    static void drawColumns(string[][] columns, size_t[] widths = [], string separator = " │ ")
     {
         if (columns.length == 0)
             return;
@@ -258,7 +258,7 @@ template ArkComponents()
         }
     }
 
-    static string printTree(
+    static string drawTree(
         string[string] tree,
         string root = "",
         size_t level = 0,
@@ -359,7 +359,7 @@ template ArkComponents()
 
             string newRoot = root.length > 0 ? root ~ "/" ~ dirName : dirName;
             auto newIsLast = isLast ~ isLastDir;
-            string subResult = printTree(tree, newRoot, level + 1, newIsLast, onlyReturn);
+            string subResult = drawTree(tree, newRoot, level + 1, newIsLast, onlyReturn);
             result ~= subResult;
             i++;
         }
@@ -367,7 +367,7 @@ template ArkComponents()
         return result;
     }
 
-    static void printGauge(
+    static void drawGauge(
         double value,
         double min = 0,
         double max = 100,
@@ -385,7 +385,7 @@ template ArkComponents()
         writeln(display);
     }
 
-    static void printTextBox(
+    static void drawTextBox(
         string text,
         size_t width = 60,
         BorderStyle style = BorderStyle.SINGLE,
@@ -449,7 +449,7 @@ template ArkComponents()
                 width - 2) ~ borders.bottomRight, borderColor));
     }
 
-    static void printBanner(string text, string font = "block")
+    static void drawBanner(string text, string font = "block")
     {
         string[char] blockChars = [
             'A': "██████\r\n██  ██\r\n██████\r\n██  ██\r\n██  ██",
@@ -470,7 +470,7 @@ template ArkComponents()
         }
     }
 
-    static void printDashboard(string[string] panels, size_t cols = 2)
+    static void drawDashboard(string[string] panels, size_t cols = 2)
     {
         auto keys = panels.keys.array;
         auto rows = (
@@ -483,14 +483,14 @@ template ArkComponents()
                 if (idx < keys.length)
                 {
                     auto key = keys[idx];
-                    printTextBox(panels[key], 35, BorderStyle.SINGLE, Color.CYAN, key);
+                    drawTextBox(panels[key], 35, BorderStyle.SINGLE, Color.CYAN, key);
                 }
             }
             writeln;
         }
     }
 
-    static void printSparkline(double[] data, size_t width = 50, string label = "")
+    static void drawSparkline(double[] data, size_t width = 50, string label = "")
     {
         if (data.length == 0)
             return;
@@ -523,12 +523,12 @@ template ArkComponents()
         writef("%s (%.2f - %.2f)\n", colorize(sparkline, Color.GREEN), minVal, maxVal);
     }
 
-    static void printCodeBlock(
+    static void drawCodeBlock(
         string code,
         string language = "",
         Color commentColor = Color.BRIGHT_BLACK)
     {
-        printTextBox(
+        drawTextBox(
             "", 80, BorderStyle.SINGLE, Color.BRIGHT_BLACK, language.length > 0 ? language.toUpper()
                 : "CODE"
         );
@@ -550,7 +550,7 @@ template ArkComponents()
                 .BRIGHT_BLACK));
     }
 
-    static void printToast(string message, LogLevel level = LogLevel.INFO, size_t duration = 3)
+    static void drawToast(string message, LogLevel level = LogLevel.INFO, size_t duration = 3)
     {
         Color bgColor = Color.BLUE;
         string icon = "ℹ";
@@ -587,7 +587,7 @@ template ArkComponents()
         writeln(colorize("╰" ~ "─".replicate(toast.length) ~ "╯", bgColor));
     }
 
-    static void printLoadingDots(string message = "Loading", size_t dots = 3)
+    static void drawLoadingDots(string message = "Loading", size_t dots = 3)
     {
         static size_t dotCount = 0;
         write("\r" ~ message ~ " " ~ ".".replicate(
@@ -598,7 +598,7 @@ template ArkComponents()
         dotCount++;
     }
 
-    static void printBreadcrumb(string[] path, string separator = " > ")
+    static void drawBreadcrumb(string[] path, string separator = " > ")
     {
         foreach (i, item; path)
         {
@@ -612,7 +612,7 @@ template ArkComponents()
         writeln;
     }
 
-    static void printSeparator(
+    static void drawSeparator(
         string sep = "─",
         size_t length = defaultLineLength,
         Color color = Color.RESET
@@ -632,7 +632,7 @@ template ArkComponents()
      *   barColor = Color of the bars
      *   title = Optional title for the chart
      */
-    static void printBarChart(
+    static void drawBarChart(
         string[] labels,
         double[] values,
         size_t maxBarWidth = 40,
@@ -647,7 +647,7 @@ template ArkComponents()
         if (title.length > 0)
         {
             writeln(colorize(title, Color.BRIGHT_WHITE));
-            printSeparator("─", title.length, Color.BRIGHT_BLACK);
+            drawSeparator("─", title.length, Color.BRIGHT_BLACK);
         }
 
         auto maxValue = values.maxElement;

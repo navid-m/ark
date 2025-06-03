@@ -63,9 +63,9 @@ final class ArkTerm
 		Color color = Color.RESET
 	)
 	{
-		printSeparator(sep, length, color);
+		drawSeparator(sep, length, color);
 		write(text ~ "\n");
-		printSeparator(sep, length, color);
+		drawSeparator(sep, length, color);
 		write("\n");
 	}
 
@@ -106,7 +106,7 @@ final class ArkTerm
 		);
 	}
 
-	static void printIndented(string text, size_t level = 1, string indent = "  ")
+	static void drawIndented(string text, size_t level = 1, string indent = "  ")
 	{
 		writeln(indent.replicate(level) ~ text);
 	}
@@ -269,7 +269,7 @@ final class ArkTUI
 		{
 			clear();
 			writeln(title);
-			ArkTerm.printSeparator("─", title.length);
+			ArkTerm.drawSeparator("─", title.length);
 
 			foreach (i, option; options)
 			{
@@ -307,7 +307,7 @@ unittest
 		{
 			ArkTerm.log(LogLevel.INFO, "Application starting...");
 
-			ArkTerm.printBreadcrumb([
+			ArkTerm.drawBreadcrumb([
 				"Home",
 				"Projects",
 				"MyApp",
@@ -316,11 +316,11 @@ unittest
 
 			writeln;
 
-			ArkTerm.printToast("Something", LogLevel.SUCCESS);
+			ArkTerm.drawToast("Something", LogLevel.SUCCESS);
 
 			writeln;
 
-			ArkTerm.printAlert("System Information:");
+			ArkTerm.drawAlert("System Information:");
 			string[][] sysInfo = [
 				["OS", "CPU", "Memory"],
 				["Linux", "Intel i7", "16GB"],
@@ -332,13 +332,13 @@ unittest
 
 			size_t[] colWidths = [15, 12, 10];
 
-			ArkTerm.printColumns(sysInfo, colWidths);
+			ArkTerm.drawColumns(sysInfo, colWidths);
 
 			writeln;
 
-			ArkTerm.printGauge(75, 0, 100, 25, "CPU Usage", Color.YELLOW);
-			ArkTerm.printGauge(45, 0, 100, 25, "Memory", Color.GREEN);
-			ArkTerm.printGauge(90, 0, 100, 25, "Disk", Color.RED);
+			ArkTerm.drawGauge(75, 0, 100, 25, "CPU Usage", Color.YELLOW);
+			ArkTerm.drawGauge(45, 0, 100, 25, "Memory", Color.GREEN);
+			ArkTerm.drawGauge(90, 0, 100, 25, "Disk", Color.RED);
 
 			writeln;
 
@@ -346,14 +346,14 @@ unittest
 				23, 45, 67, 43, 89, 76, 54, 32, 67, 78, 45, 23, 56, 78, 90
 			];
 
-			ArkTerm.printSparkline(cpuData, 30, "CPU Trend");
+			ArkTerm.drawSparkline(cpuData, 30, "CPU Trend");
 
 			writeln;
 
-			ArkTerm.printAlert("Some message", LogLevel.SUCCESS);
-			ArkTerm.printKeyValue("Version", "1.0.0");
-			ArkTerm.printKeyValue("Author", "Acme");
-			ArkTerm.printKeyValue("Build", "Debug");
+			ArkTerm.drawAlert("Some message", LogLevel.SUCCESS);
+			ArkTerm.drawKeyValue("Version", "1.0.0");
+			ArkTerm.drawKeyValue("Author", "Acme");
+			ArkTerm.drawKeyValue("Build", "Debug");
 
 			writeln;
 
@@ -361,15 +361,15 @@ unittest
 
 			foreach (i; 0 .. 301)
 			{
-				ArkTerm.printProgress(i / 200.0, 10, "", Color.GREEN);
+				ArkTerm.drawProgress(i / 200.0, 10, "", Color.GREEN);
 				Thread.sleep(100.nsecs);
 			}
 
 			writeln;
 
-			ArkTerm.printStatus("Core module", true, "loaded in 245ms");
-			ArkTerm.printStatus("Network module", true, "connected");
-			ArkTerm.printStatus("Database module", false, "connection failed");
+			ArkTerm.drawStatus("Core module", true, "loaded in 245ms");
+			ArkTerm.drawStatus("Network module", true, "connected");
+			ArkTerm.drawStatus("Database module", false, "connection failed");
 
 			writeln;
 
@@ -400,9 +400,9 @@ unittest
 				]
 			];
 
-			ArkTerm.printAlert("System Status:");
-			ArkTerm.printTable(headers, data);
-			ArkTerm.printTextBox(
+			ArkTerm.drawAlert("System Status:");
+			ArkTerm.drawTable(headers, data);
+			ArkTerm.drawTextBox(
 				"This is a multi-line text box with automatic word wrapping. " ~
 					"It can contain multiple paragraphs and will probably properly format the content " ~
 					"within the specified width constraints.\n\n", 50, BorderStyle
@@ -419,7 +419,7 @@ unittest
         writeln("Count: ", i);
     }
 }`;
-			ArkTerm.printCodeBlock(sampleCode, "D");
+			ArkTerm.drawCodeBlock(sampleCode, "D");
 
 			writeln;
 
@@ -430,9 +430,9 @@ unittest
 				"Network": "Bandwidth: 45 Mbps\nLatency: 12ms\nPacket Loss: 0%"
 			];
 
-			ArkTerm.printAlert("System Dashboard:");
-			ArkTerm.printDashboard(dashboardPanels, 2);
-			ArkTerm.printAlert("Project Structure:");
+			ArkTerm.drawAlert("System Dashboard:");
+			ArkTerm.drawDashboard(dashboardPanels, 2);
+			ArkTerm.drawAlert("Project Structure:");
 
 			string[string] projectTree = [
 				"src/main.d": "Main application file",
@@ -442,12 +442,12 @@ unittest
 				"docs/README.md": "Documentation"
 			];
 
-			string tree = ArkTerm.printTree(
+			string tree = ArkTerm.drawTree(
 				projectTree, onlyReturn:
 				true
 			);
 
-			ArkTerm.printAlert(tree);
+			ArkTerm.drawAlert(tree);
 
 			writeln;
 
@@ -455,7 +455,7 @@ unittest
 
 			writeln;
 
-			ArkTerm.printBarChart(["Some", "Value", "Here"], [1, 10, 20]);
+			ArkTerm.drawBarChart(["Some", "Value", "Here"], [1, 10, 20]);
 		}
 	}
 
