@@ -872,17 +872,6 @@ template ArkComponents()
      *   showLegend = Whether to show legend with percentages
      *   colors = Array of colors for each slice (cycles if fewer than slices)
      */
-    /** 
- * Draw a pie chart using ASCII characters.
- *
- * Params:
- *   labels = Labels for each slice
- *   values = Values for each slice
- *   radius = Radius of the pie chart
- *   title = Optional title for the chart
- *   showLegend = Whether to show legend with percentages
- *   colors = Array of colors for each slice (cycles if fewer than slices)
- */
     static void drawPieChart(
         string[] labels,
         double[] values,
