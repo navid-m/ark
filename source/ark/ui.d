@@ -659,7 +659,8 @@ unittest
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
 
 			string name = ArkTUI.getTextInput("Name");
-			writeln("you said: " ~ name);
+
+			writeln("You said: " ~ name);
 		}
 	}
 
