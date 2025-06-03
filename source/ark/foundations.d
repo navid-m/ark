@@ -540,5 +540,4 @@ template ArkFoundationComponents()
     {
         writeln(indent.replicate(level) ~ text);
     }
-
 }
