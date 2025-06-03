@@ -139,8 +139,7 @@ template ArkComponents()
         );
     }
 
-    static void printSpinner(
-        string message = "Loading...")
+    static void printSpinner(string message = "Loading...")
     {
         write("\r" ~ colorize(spinnerChars[spinnerIndex], Color.CYAN) ~ " " ~ message);
         stdout.flush();
