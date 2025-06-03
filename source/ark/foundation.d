@@ -536,43 +536,6 @@ template FoundationComponents()
         writeln(colorize(sep.replicate(length), color));
     }
 
-    static void log(LogLevel level, string message)
-    {
-        auto timestamp = Clock.currTime.toISOExtString()[0 .. 19];
-        string levelStr;
-        Color levelColor;
-
-        final switch (level)
-        {
-        case LogLevel.INFO:
-            levelStr = "INFO ";
-            levelColor = Color.BLUE;
-            break;
-        case LogLevel.SUCCESS:
-            levelStr = "OK   ";
-            levelColor = Color.GREEN;
-            break;
-        case LogLevel.WARNING:
-            levelStr = "WARN ";
-            levelColor = Color.YELLOW;
-            break;
-        case LogLevel.ERROR:
-            levelStr = "ERROR";
-            levelColor = Color.RED;
-            break;
-        case LogLevel.DEBUG:
-            levelStr = "DEBUG";
-            levelColor = Color.MAGENTA;
-            break;
-        }
-
-        writef("[%s] %s %s\n",
-            colorize(timestamp, Color.BRIGHT_BLACK),
-            colorize(levelStr, levelColor),
-            message
-        );
-    }
-
     static void drawIndented(string text, size_t level = 1, string indent = "  ")
     {
         writeln(indent.replicate(level) ~ text);
