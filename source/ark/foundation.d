@@ -1,6 +1,6 @@
 module ark.foundation;
 
-template FoundationComponents()
+template ArkFoundationComponents()
 {
     /** 
      * Write some text block surrounded by separators.

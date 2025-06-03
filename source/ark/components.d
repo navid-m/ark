@@ -6,7 +6,7 @@ mixin template ArkComponents()
     import ark.charts;
     import ark.graphs;
 
-    mixin ark.foundation.FoundationComponents!();
+    mixin ark.foundation.ArkFoundationComponents!();
     mixin ark.charts.ArkCharts!();
     mixin ark.graphs.ArkGraphs!();
 }
