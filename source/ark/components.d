@@ -598,6 +598,13 @@ template ArkComponents()
         dotCount++;
     }
 
+    /** 
+     * Draw a breadcrumb/path-display component.
+     *
+     * Params:
+     *   path = The path to be represented
+     *   separator = The separator 
+     */
     static void drawBreadcrumb(string[] path, string separator = " > ")
     {
         foreach (i, item; path)
