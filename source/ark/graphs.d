@@ -366,28 +366,32 @@ template ArkGraphs()
             return;
 
         grid[node.y][node.x] = "┌";
+
         foreach (i; 1 .. node.width - 1)
             grid[node.y][node.x + i] = "─";
+
         grid[node.y][node.x + node.width - 1] = "┐";
         grid[node.y + 1][node.x] = "│";
 
         size_t textStart = node.x + 1 + (node.width - 2 - node.text.length) / 2;
+
         foreach (i, c; node.text)
         {
             if (textStart + i < node.x + node.width - 1)
                 grid[node.y + 1][textStart + i] = [c];
         }
-
         foreach (i; 1 .. node.width - 1)
         {
             if (grid[node.y + 1][node.x + i] == " ")
                 grid[node.y + 1][node.x + i] = " ";
         }
-        grid[node.y + 1][node.x + node.width - 1] = "│";
 
+        grid[node.y + 1][node.x + node.width - 1] = "│";
         grid[node.y + 2][node.x] = "└";
+
         foreach (i; 1 .. node.width - 1)
             grid[node.y + 2][node.x + i] = "─";
+
         grid[node.y + 2][node.x + node.width - 1] = "┘";
     }
 
