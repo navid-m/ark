@@ -20,7 +20,6 @@ else
 {
 	import core.sys.posix.unistd;
 	import core.sys.posix.termios;
-	import ark.style;
 }
 
 mixin Structures!();
