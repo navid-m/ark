@@ -26,6 +26,7 @@ function drawLoadingDots
 function drawBreadcrumb
 function drawSeparator
 function drawBarChart
+function drawPieChart
 ```
 
 #### Screenshot
