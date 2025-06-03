@@ -8,6 +8,7 @@ Line charts, bar charts, pie charts, more or less everything for data visualizat
 
 ```
 function drawLineGraph
+function drawFlowDiagram
 function drawTable
 function drawAlert
 function drawKeyValue

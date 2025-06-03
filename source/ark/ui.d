@@ -474,7 +474,6 @@ unittest
 			];
 
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
-
 		}
 	}
 
