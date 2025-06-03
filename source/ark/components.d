@@ -975,14 +975,17 @@ template ArkComponents()
     static void drawPieChart(
         string[] labels,
         double[] values,
-        size_t radius = 15,
+        size_t radius = 12,
         string title = "",
         bool showLegend = true,
         Color[] colors = []
     )
     {
         import std.math : PI, cos, sin, atan2, sqrt;
-        import std.conv;
+        import std.algorithm : sum, maxElement;
+        import std.conv : to;
+        import std.stdio : writeln, write;
+        import std.range : iota;
 
         if (labels.length == 0 || values.length == 0 || labels.length != values.length)
             return;
@@ -1026,7 +1029,7 @@ template ArkComponents()
         {
             foreach (x; 0 .. size * 2)
             {
-                auto dx = (cast(double) x / 2.0) - centerX;
+                auto dx = (cast(double) x / 2.2) - centerX;
                 auto dy = cast(double) y - centerY;
                 auto distance = sqrt(dx * dx + dy * dy);
 
@@ -1038,20 +1041,25 @@ template ArkComponents()
 
                     foreach (i; 0 .. values.length)
                     {
-                        if (angle >= angles[i] && angle < angles[i + 1])
+                        if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1]))
                         {
-                            wchar[] chars = [
-                                '█', '▓', '▒', '░', '▪', '▫', '■',
-                                '□'
-                            ];
-                            auto charIndex = i % chars.length;
-                            grid[y][x] = chars[charIndex];
+                            wchar ch;
+                            if (distance > radius - 0.6)
+                            {
+                                double quadrant = angle / (PI / 2);
+                                int q = cast(int) quadrant;
+                                ch = ['◜', '◝', '◞', '◟'][q % 4];
+                            }
+                            else
+                                ch = '●';
+                            grid[y][x] = ch;
                             break;
                         }
                     }
                 }
             }
         }
+
         foreach (y; 0 .. size)
         {
             foreach (x; 0 .. size * 2)
@@ -1060,10 +1068,9 @@ template ArkComponents()
                 if (ch != ' ')
                 {
                     int sliceIndex = -1;
-                    auto dx = (cast(double) x / 2.0) - centerX;
+                    auto dx = (cast(double) x / 2.2) - centerX;
                     auto dy = cast(double) y - centerY;
                     auto distance = sqrt(dx * dx + dy * dy);
-
                     if (distance <= radius)
                     {
                         auto angle = atan2(dy, dx);
@@ -1072,7 +1079,7 @@ template ArkComponents()
 
                         foreach (i; 0 .. values.length)
                         {
-                            if (angle >= angles[i] && angle < angles[i + 1])
+                            if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1]))
                             {
                                 sliceIndex = cast(int) i;
                                 break;
@@ -1108,12 +1115,7 @@ template ArkComponents()
             {
                 auto percentage = (values[i] / totalValue) * 100;
                 auto colorIndex = i % colors.length;
-                wchar[] chars = [
-                    '█', '▓', '▒', '░', '▪', '▫', '■', '□'
-                ];
-                auto charIndex = i % chars.length;
-                string indicator = colorize(chars[charIndex].to!string
-                        ~ chars[charIndex].to!string, colors[colorIndex]);
+                string indicator = colorize("●●", colors[colorIndex]);
                 writef("%s %-*s │ %6.1f%% │ %8.2f\n",
                     indicator,
                     maxLabelWidth,
@@ -1125,4 +1127,5 @@ template ArkComponents()
             drawSeparator("─", 40, Color.BRIGHT_BLACK);
         }
     }
+
 }
