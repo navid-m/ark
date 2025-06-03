@@ -398,39 +398,6 @@ template ArkFoundationComponents()
         }
     }
 
-    static void drawSparkline(double[] data, size_t width = 50, string label = "")
-    {
-        if (data.length == 0)
-            return;
-
-        auto minVal = data.minElement;
-        auto maxVal = data.maxElement;
-        auto range = maxVal - minVal;
-
-        if (range == 0)
-            range = 1;
-
-        string[] chars = [
-            "▁", "▂", "▃", "▄",
-            "▅", "▆", "▇", "█"
-        ];
-        string sparkline = "";
-
-        foreach (val; data)
-        {
-            auto normalized = (val - minVal) / range;
-            auto charIndex = cast(size_t)(
-                normalized * (
-                    cast(int) chars.length - 1));
-            sparkline ~= chars[charIndex];
-        }
-
-        if (label.length > 0)
-            writef("%s: ", label);
-
-        writef("%s (%.2f - %.2f)\n", colorize(sparkline, Color.GREEN), minVal, maxVal);
-    }
-
     static void drawCodeBlock(
         string code,
         string language = "",
