@@ -168,20 +168,35 @@ template ArkComponents()
         );
     }
 
+    /** 
+     * Print a spinner.
+     *
+     * Params:
+     *   message = Annotation to show on left hand side of spinner
+     */
     static void printSpinner(string message = "Loading...")
     {
         write("\r" ~ colorize(spinnerChars[spinnerIndex], Color.CYAN) ~ " " ~ message);
         stdout.flush();
-        spinnerIndex = (
-            spinnerIndex + 1) % spinnerChars
-            .length;
+        spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
     }
 
+    /**
+     * Clears the spinner from the console by overwriting the current line with spaces.
+     */
     static void clearSpinner()
     {
         write("\r" ~ " ".replicate(80) ~ "\r");
     }
 
+    /** 
+     * Print some status message.
+     *
+     * Params:
+     *   message = The message
+     *   success = Success or not, will change icon based on this
+     *   details = Details of status message to appear as subtitle
+     */
     static void printStatus(string message, bool success, string details = "")
     {
         string symbol = success ? "✓" : "✗";
