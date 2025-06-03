@@ -241,6 +241,189 @@ final class ArkTUI
 		}
 	}
 
+	/** 
+     * Draw a text input box that can be typed in.
+     *
+     * Params:
+     *   prompt = Label for the input box
+     *   defaultValue = Default text in the box
+     *   width = Width of the input box
+     *   secret = Whether to mask input with asterisks
+     */
+	static string getTextInput(
+		string prompt = "Input:",
+		string defaultValue = "",
+		size_t width = 40,
+		bool secret = false
+	)
+	{
+		import std.conv : to;
+		import std.string : strip;
+
+		version (Windows)
+		{
+			import core.sys.windows.windows;
+		}
+		else
+		{
+			import core.sys.posix.termios;
+			import core.sys.posix.unistd;
+		}
+
+		string input = defaultValue;
+		size_t cursorPos = input.length;
+
+		version (Windows)
+		{
+			HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+			DWORD oldMode;
+			GetConsoleMode(hStdin, &oldMode);
+			SetConsoleMode(hStdin, oldMode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT));
+		}
+		else
+		{
+			termios oldTermios, newTermios;
+			tcgetattr(0, &oldTermios);
+			newTermios = oldTermios;
+			newTermios.c_lflag &= ~(ICANON | ECHO);
+			tcsetattr(0, TCSANOW, &newTermios);
+		}
+
+		scope (exit)
+		{
+			version (Windows)
+			{
+				SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), oldMode);
+			}
+			else
+			{
+				tcsetattr(0, TCSANOW, &oldTermios);
+			}
+		}
+
+		import ark.style : ArkStyle;
+
+		writeln(noConColorize(prompt, Color.CYAN));
+		writeln(noConColorize("┌" ~ "─".replicate(width) ~ "┐", Color.WHITE));
+		writeln(noConColorize("│" ~ " ".replicate(width) ~ "│", Color.WHITE));
+		writeln(noConColorize("└" ~ "─".replicate(width) ~ "┘", Color.WHITE));
+
+		void updateContent()
+		{
+			write("\033[2A\033[2G");
+			write(" ".replicate(width));
+			write("\033[" ~ width.to!string ~ "D");
+
+			string displayText = secret && input.length > 0 ? "*".replicate(input.length) : input;
+			if (displayText.length > width)
+				displayText = displayText[0 .. width];
+
+			if (cursorPos < displayText.length)
+			{
+				write(displayText[0 .. cursorPos]);
+				write(noConColorize(displayText[cursorPos .. cursorPos + 1], Color.WHITE));
+				write(displayText[cursorPos + 1 .. $]);
+			}
+			else
+			{
+				write(displayText);
+				if (cursorPos == displayText.length && displayText.length < width)
+					write(noConColorize("█", Color.WHITE));
+			}
+
+			write("\033[3B\033[1G");
+			stdout.flush();
+		}
+
+		updateContent();
+
+		while (true)
+		{
+			char ch;
+			version (Windows)
+			{
+				DWORD dwRead;
+				ReadConsoleA(GetStdHandle(STD_INPUT_HANDLE), &ch, 1, &dwRead, null);
+			}
+			else
+			{
+				read(0, &ch, 1);
+			}
+
+			if (ch == '\r' || ch == '\n')
+			{
+				write("\033[2B\033[0G");
+				return input;
+			}
+			else if (ch == '\b' || ch == 127)
+			{
+				if (cursorPos > 0)
+				{
+					input = input[0 .. cursorPos - 1] ~ input[cursorPos .. $];
+					cursorPos--;
+					updateContent();
+				}
+			}
+			else if (ch == 27)
+			{
+				version (Windows)
+				{
+					char ch2, ch3;
+					DWORD dwReada;
+					ReadConsoleA(GetStdHandle(STD_INPUT_HANDLE), &ch2, 1, &dwReada, null);
+					if (ch2 == '[')
+					{
+						ReadConsoleA(GetStdHandle(STD_INPUT_HANDLE), &ch3, 1, &dwReada, null);
+						if (ch3 == 'C' && cursorPos < input.length)
+						{
+							cursorPos++;
+							updateContent();
+						}
+						else if (ch3 == 'D' && cursorPos > 0)
+						{
+							cursorPos--;
+							updateContent();
+						}
+					}
+				}
+				else
+				{
+					char[2] seq;
+					if (read(0, &seq[0], 1) == 1 && seq[0] == '[')
+					{
+						if (read(0, &seq[1], 1) == 1)
+						{
+							if (seq[1] == 'C' && cursorPos < input.length)
+							{
+								cursorPos++;
+								updateContent();
+							}
+							else if (seq[1] == 'D' && cursorPos > 0)
+							{
+								cursorPos--;
+								updateContent();
+							}
+						}
+					}
+				}
+			}
+			else if (ch == 3)
+			{
+				write("\033[2B\033[0G");
+				throw new Exception("Cancelled");
+			}
+			else if (ch >= 32 && ch <= 126)
+			{
+				if (input.length < width - 1)
+				{
+					input = input[0 .. cursorPos] ~ ch ~ input[cursorPos .. $];
+					cursorPos++;
+					updateContent();
+				}
+			}
+		}
+	}
+
 	int showMenu(string[] options, string title = "Select an option:")
 	{
 		int selected = 0;
@@ -474,6 +657,9 @@ unittest
 			];
 
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
+
+			string name = ArkTUI.getTextInput("Name");
+			writeln("you said: " ~ name);
 		}
 	}
 

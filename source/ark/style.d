@@ -1,5 +1,7 @@
 module ark.style;
 
+import ark.structures;
+
 template ArkStyle()
 {
     /** 
@@ -37,3 +39,5 @@ template ArkStyle()
         style ~ text ~ Style.RESET
     ) : text;
 }
+
+static string noConColorize(string text, Color color) => color ~ text ~ Color.RESET;
