@@ -1,4 +1,5 @@
 module ark.structures;
+
 enum Color : string
 {
     RESET = "\033[0m",
