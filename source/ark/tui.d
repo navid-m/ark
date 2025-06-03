@@ -456,6 +456,13 @@ unittest
 			writeln;
 
 			ArkTerm.drawBarChart(["Some", "Value", "Here"], [1, 10, 20]);
+
+			writeln;
+
+			double[] datax = [1.0, 2.5, 1.8, 3.2, 2.1, 4.0, 3.5];
+			string[] labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+			ArkTerm.drawLineGraph(datax, 60, 15, "Monthly Sales", labels, true, Color.GREEN);
+
 		}
 	}
 
