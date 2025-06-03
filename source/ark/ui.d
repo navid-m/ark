@@ -184,8 +184,7 @@ final class ArkTUI
 		{
 			tcgetattr(0, &origTerm);
 			termios raw = origTerm;
-			raw.c_lflag &= ~(
-				ICANON | ECHO);
+			raw.c_lflag &= ~(ICANON | ECHO);
 			tcsetattr(0, TCSAFLUSH, &raw);
 		}
 	}
