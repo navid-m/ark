@@ -251,7 +251,7 @@ final class ArkTUI
      *   secret = Whether to mask input with asterisks
      */
 	static string getTextInput(
-		string prompt = "Input:",
+		string prompt = "",
 		string defaultValue = "",
 		size_t width = 40,
 		bool secret = false
@@ -303,7 +303,9 @@ final class ArkTUI
 
 		import ark.style : ArkStyle;
 
-		writeln(noConColorize(prompt, Color.CYAN));
+		if (prompt.length > 0)
+			writeln(noConColorize(prompt, Color.CYAN));
+
 		writeln(noConColorize("┌" ~ "─".replicate(width) ~ "┐", Color.WHITE));
 		writeln(noConColorize("│" ~ " ".replicate(width) ~ "│", Color.WHITE));
 		writeln(noConColorize("└" ~ "─".replicate(width) ~ "┘", Color.WHITE));
@@ -658,7 +660,7 @@ unittest
 
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
 
-			string name = ArkTUI.getTextInput("Name");
+			string name = ArkTUI.getTextInput();
 
 			writeln("You said: " ~ name);
 		}
