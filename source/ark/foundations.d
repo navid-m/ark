@@ -455,7 +455,7 @@ template ArkFoundationComponents()
         }
 
         auto timestamp = Clock.currTime.toString()[11 .. 19];
-        string toast = format(" %s %s (%s) ", icon, message, timestamp);
+        string toast = format(" %s %s (%s) ", icon, message, strip(timestamp));
 
         writeln(colorize("╭" ~ "─".replicate(toast.length) ~ "╮", bgColor));
         writeln(colorize("│" ~ toast ~ "  │", bgColor));
