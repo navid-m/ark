@@ -292,13 +292,9 @@ final class ArkTUI
 		scope (exit)
 		{
 			version (Windows)
-			{
 				SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), oldMode);
-			}
 			else
-			{
 				tcsetattr(0, TCSANOW, &oldTermios);
-			}
 		}
 
 		import ark.style : ArkStyle;
