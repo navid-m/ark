@@ -257,6 +257,7 @@ final class ArkTUI
 		bool secret = false
 	)
 	{
+		import ark.style : ArkStyle;
 		import std.conv : to;
 		import std.string : strip;
 
@@ -296,8 +297,6 @@ final class ArkTUI
 			else
 				tcsetattr(0, TCSANOW, &oldTermios);
 		}
-
-		import ark.style : ArkStyle;
 
 		if (prompt.length > 0)
 			writeln(noConColorize(prompt, Color.CYAN));
