@@ -96,7 +96,7 @@ final class ArkTerm
 		}
 		version (Posix)
 		{
-			write("\033[2J\033[H");
+			writeln("\033[2J\033[H");
 		}
 	}
 
@@ -268,7 +268,6 @@ final class ArkTUI
 		else
 		{
 			import core.sys.posix.termios;
-			import core.sys.posix.unistd;
 		}
 
 		string input = defaultValue;
@@ -468,11 +467,11 @@ unittest
 			ArkTerm.log(LogLevel.INFO, "Application starting...");
 
 			ArkTerm.drawBreadcrumb([
-				"Home",
-				"Projects",
-				"MyApp",
-				"src"
-			]);
+					"Home",
+					"Projects",
+					"MyApp",
+					"src"
+				]);
 
 			writeln;
 
