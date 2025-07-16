@@ -29,7 +29,7 @@ string colorize(string text, int fg, int bg = -1)
  *   bg = Background color
  *   things = Any input, object or text to print
  */
-void printColor(int fg, int bg = -1, Variant things...)
+void colorPrint(int fg, int bg = -1, Variant things...)
 {
     import std.stdio;
 
