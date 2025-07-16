@@ -1,6 +1,6 @@
 module ark.structures;
 
-package enum Color : string
+enum Color : string
 {
     RESET = "\033[0m",
     BLACK = "\033[30m",
@@ -18,7 +18,41 @@ package enum Color : string
     BRIGHT_BLUE = "\033[94m",
     BRIGHT_MAGENTA = "\033[95m",
     BRIGHT_CYAN = "\033[96m",
-    BRIGHT_WHITE = "\033[97m"
+    BRIGHT_WHITE = "\033[97m",
+    NORD0 = "\033[38;5;236m",
+    NORD1 = "\033[38;5;238m",
+    NORD2 = "\033[38;5;240m",
+    NORD3 = "\033[38;5;245m",
+    NORD4 = "\033[38;5;250m",
+    NORDBLUE = "\033[38;5;67m",
+    NORDCYAN = "\033[38;5;73m",
+    NORDGREEN = "\033[38;5;114m",
+    NORDRED = "\033[38;5;131m",
+    NORDORANGE = "\033[38;5;166m",
+    GRUVBOXBG = "\033[38;5;235m",
+    GRUVBOXFG = "\033[38;5;223m",
+    GRUVBOXRED = "\033[38;5;124m",
+    GRUVBOXGREEN = "\033[38;5;106m",
+    GRUVBOXYELLOW = "\033[38;5;172m",
+    GRUVBOXBLUE = "\033[38;5;66m",
+    GRUVBOXPURPLE = "\033[38;5;132m",
+    GRUVBOXAQUA = "\033[38;5;108m",
+    SOLARIZEDBASE03 = "\033[38;5;234m",
+    SOLARIZEDBASE02 = "\033[38;5;235m",
+    SOLARIZEDBASE01 = "\033[38;5;240m",
+    SOLARIZEDBASE00 = "\033[38;5;241m",
+    SOLARIZEDBASE0 = "\033[38;5;244m",
+    SOLARIZEDBASE1 = "\033[38;5;245m",
+    SOLARIZEDBASE2 = "\033[38;5;254m",
+    SOLARIZEDBASE3 = "\033[38;5;230m",
+    SOLARIZEDYELLOW = "\033[38;5;136m",
+    SOLARIZEDORANGE = "\033[38;5;166m",
+    SOLARIZEDRED = "\033[38;5;160m",
+    SOLARIZEDMAGENTA = "\033[38;5;125m",
+    SOLARIZEDVIOLET = "\033[38;5;61m",
+    SOLARIZEDBLUE = "\033[38;5;33m",
+    SOLARIZEDCYAN = "\033[38;5;37m",
+    SOLARIZEDGREEN = "\033[38;5;64m"
 }
 
 template Structures()

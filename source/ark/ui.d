@@ -654,9 +654,7 @@ unittest
 
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
 
-			import ark.color;
-
-			writeln(colorize("hello", ArkColor.Red, ArkColor.Blue));
+			ArkTerm.printColorized(Color.RED, Color.BLUE, "hi", "you");
 			string name = ArkTUI.getTextInput();
 
 			writeln("You said: " ~ name);
