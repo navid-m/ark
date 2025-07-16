@@ -60,6 +60,7 @@ template ArkStyle()
     private static string stylize(string text, Style style) => colorEnabled ? (
         style ~ text ~ Style.RESET
     ) : text;
+
     private static string toBgCode(Color color) @safe
     {
         import std.regex : matchFirst;
