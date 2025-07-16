@@ -32,8 +32,7 @@ template ArkStyle()
     {
         if (!colorEnabled)
             return text;
-
-        string fgCode = fg;
+        string fgCode = cast(string) fg;
         string bgCode = (bg != Color.RESET) ? toBgCode(bg) : "";
         return fgCode ~ bgCode ~ text ~ Color.RESET;
     }
@@ -61,7 +60,6 @@ template ArkStyle()
     private static string stylize(string text, Style style) => colorEnabled ? (
         style ~ text ~ Style.RESET
     ) : text;
-
     private static string toBgCode(Color color) @safe
     {
         import std.regex : matchFirst;
@@ -70,13 +68,15 @@ template ArkStyle()
         if (color == Color.RESET)
             return "";
 
-        auto m = to!string(color).matchFirst(r"\033\[38;5;(\d+)m");
+        string colorStr = cast(string) color;
+        auto m = colorStr.matchFirst(r"\x1b\[38;5;(\d+)m");
         if (m)
         {
             int code = m[1].to!int;
             return "\033[48;5;" ~ code.to!string ~ "m";
         }
-        auto mStd = to!string(color).matchFirst(r"\033\[(\d+)m");
+
+        auto mStd = colorStr.matchFirst(r"\x1b\[(\d+)m");
         if (mStd)
         {
             int code = mStd[1].to!int;
@@ -85,9 +85,9 @@ template ArkStyle()
             if (code >= 90 && code <= 97)
                 return "\033[" ~ (code + 10).to!string ~ "m";
         }
+
         return "";
     }
-
 }
 
 static string noConColorize(string text, Color color) => color ~ text ~ Color.RESET;
