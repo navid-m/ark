@@ -467,11 +467,11 @@ unittest
 			ArkTerm.log(LogLevel.INFO, "Application starting...");
 
 			ArkTerm.drawBreadcrumb([
-					"Home",
-					"Projects",
-					"MyApp",
-					"src"
-				]);
+				"Home",
+				"Projects",
+				"MyApp",
+				"src"
+			]);
 
 			writeln;
 
@@ -654,6 +654,9 @@ unittest
 
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
 
+			import ark.color;
+
+			writeln(colorize("hello", ArkColor.Red, ArkColor.Blue));
 			string name = ArkTUI.getTextInput();
 
 			writeln("You said: " ~ name);
