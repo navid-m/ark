@@ -655,9 +655,18 @@ unittest
 			ArkTerm.drawFlowDiagram(nodes, connections, 50, 20);
 			ArkTerm.printColorized(Color.RED, Color.BLUE, "hi you");
 
+			string[] headers2 = ["Name", "Age", "City"];
+			string[][] data2 = [
+				["Alice", "25", "New York"],
+				["Bob", "30", "London"],
+				["Charlie", "35", "Tokyo"]
+			];
+			ArkTerm.drawRoundedTable(headers2, data2);
+
 			string name = ArkTUI.getTextInput();
 
 			writeln("You said: " ~ name);
+
 		}
 	}
 

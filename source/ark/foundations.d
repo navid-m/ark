@@ -107,6 +107,71 @@ template ArkFoundationComponents()
         writeln;
     }
 
+    /**
+     * Print a table with rounded corners.
+     *
+     * Params:
+     *   headers = Table headers
+     *   rows = Rows of the table
+     *   minColWidth = Minimum column width per column
+     */
+    static void drawRoundedTable(string[] headers, string[][] rows, size_t minColWidth = 10)
+    {
+        if (headers.length == 0)
+            return;
+
+        auto colWidths = new size_t[headers.length];
+        foreach (i, header; headers)
+        {
+            colWidths[i] = max(header.length, minColWidth);
+        }
+        foreach (row; rows)
+        {
+            foreach (i, cell; row)
+            {
+                if (i < colWidths.length)
+                    colWidths[i] = max(colWidths[i], cell.length);
+            }
+        }
+        write("╭");
+        foreach (i, width; colWidths)
+        {
+            write("─".replicate(width + 2));
+            write(i == cast(int) colWidths.length - 1 ? "╮" : "┬");
+        }
+        writeln;
+        write("│");
+        foreach (i, header; headers)
+        {
+            writef(" %-*s │", colWidths[i], header);
+        }
+        writeln;
+        write("├");
+        foreach (i, width; colWidths)
+        {
+            write("─".replicate(width + 2));
+            write(i == cast(int) colWidths.length - 1 ? "┤" : "┼");
+        }
+        writeln;
+        foreach (row; rows)
+        {
+            write("│");
+            foreach (i; 0 .. colWidths.length)
+            {
+                string cell = i < row.length ? row[i] : "";
+                writef(" %-*s │", colWidths[i], cell);
+            }
+            writeln;
+        }
+        write("╰");
+        foreach (i, width; colWidths)
+        {
+            write("─".replicate(width + 2));
+            write(i == cast(int) colWidths.length - 1 ? "╯" : "┴");
+        }
+        writeln;
+    }
+
     /** 
      * Print some alert.
      *
