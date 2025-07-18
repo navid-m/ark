@@ -2,7 +2,34 @@ module ark.charts;
 
 template ArkCharts()
 {
-    /** 
+    /**
+     * Configuration for individual bars in a bar chart.
+     */
+    struct ArkBarConfiguration
+    {
+        Color[] colors;
+
+        /**
+         * Get the color for a specific bar index.
+         * Falls back to the default color if no custom color is set.
+         */
+        Color getColorForBar(size_t index, Color defaultColor) const
+        {
+            if (index < colors.length)
+                return colors[index];
+            return defaultColor;
+        }
+
+        /**
+         * Check if custom colors are configured.
+         */
+        bool hasCustomColors() const
+        {
+            return colors.length > 0;
+        }
+    }
+
+    /**
      * Print a horizontal bar chart.
      *
      * Params:
@@ -10,8 +37,9 @@ template ArkCharts()
      *   values = Values for each bar
      *   maxBarWidth = Maximum width of the bars
      *   showValues = Whether to show values at the end of bars
-     *   barColor = Color of the bars
+     *   barColor = Default color of the bars
      *   title = Optional title for the chart
+     *   config = Optional configuration for custom bar colors
      */
     static void drawBarChart(
         string[] labels,
@@ -19,7 +47,8 @@ template ArkCharts()
         size_t maxBarWidth = 40,
         bool showValues = true,
         Color barColor = Color.CYAN,
-        string title = ""
+        string title = "",
+        ArkBarConfiguration config = ArkBarConfiguration.init
     )
     {
         if (labels.length == 0 || values.length == 0 || labels.length != values.length)
@@ -32,7 +61,6 @@ template ArkCharts()
         }
 
         auto maxValue = values.maxElement;
-
         if (maxValue <= 0)
             maxValue = 1;
 
@@ -43,15 +71,14 @@ template ArkCharts()
             auto value = values[i];
             auto barLength = cast(size_t)((value / maxValue) * maxBarWidth);
 
+            Color currentBarColor = config.getColorForBar(i, barColor);
             writef("%-*s │", maxLabelWidth, label);
-            write(colorize("█".replicate(barLength), barColor));
-
+            write(colorize("█".replicate(barLength), currentBarColor));
             if (showValues)
             {
                 write(" ");
                 writef("%.1f", value);
             }
-
             writeln;
         }
     }

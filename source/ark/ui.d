@@ -663,6 +663,13 @@ unittest
 			];
 			ArkTerm.drawRoundedTable(headers2, data2);
 
+			ArkTerm.drawBarChart(["Some", "Value", "Here"], [1, 10, 20], config:
+				ArkTerm.ArkBarConfiguration([
+				Color.BRIGHT_RED,
+				Color.BLUE,
+				Color.GRUVBOXRED
+			]));
+
 			string name = ArkTUI.getTextInput();
 
 			writeln("You said: " ~ name);
