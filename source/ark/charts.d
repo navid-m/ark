@@ -2,12 +2,11 @@ module ark.charts;
 
 template ArkCharts()
 {
-    /**
-     * Configuration for individual bars in a bar chart.
-     */
     struct ArkBarConfiguration
     {
         Color[] colors;
+        bool smartRounding = true;
+        int decimalPlaces = 1;
 
         /**
          * Get the color for a specific bar index.
@@ -26,6 +25,19 @@ template ArkCharts()
         bool hasCustomColors() const
         {
             return colors.length > 0;
+        }
+
+        string formatNumber(double value) const
+        {
+            if (smartRounding)
+            {
+                if (value == cast(long) value)
+                    return format("%d", cast(long) value);
+                else
+                    return format("%.1f", value);
+            }
+            else
+                return format("%.*f", decimalPlaces, value);
         }
     }
 
@@ -70,14 +82,14 @@ template ArkCharts()
         {
             auto value = values[i];
             auto barLength = cast(size_t)((value / maxValue) * maxBarWidth);
-
             Color currentBarColor = config.getColorForBar(i, barColor);
+
             writef("%-*s │", maxLabelWidth, label);
             write(colorize("█".replicate(barLength), currentBarColor));
             if (showValues)
             {
                 write(" ");
-                writef("%.1f", value);
+                write(config.formatNumber(value));
             }
             writeln;
         }
