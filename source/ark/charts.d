@@ -142,7 +142,6 @@ template ArkCharts()
 
         size_t[] segments;
         double[] proportions;
-
         foreach (val; values)
         {
             double pct = val / total;
