@@ -1,7 +1,6 @@
 module ark.graphs;
 
-template ArkGraphs()
-{
+template ArkGraphs() {
     static void drawLineGraph(
         double[] data,
         size_t width = 60,
@@ -13,16 +12,14 @@ template ArkGraphs()
         Color gridColor = Color.BRIGHT_BLACK,
         bool showYAxis = true,
         bool scatter = false
-    )
-    {
+    ) {
         import std.math : abs;
         import std.conv;
 
         if (data.length == 0)
             return;
 
-        if (title.length > 0)
-        {
+        if (title.length > 0) {
             writeln(colorize(title, Color.BRIGHT_WHITE));
             drawSeparator("─", title.length, Color.BRIGHT_BLACK);
         }
@@ -34,37 +31,28 @@ template ArkGraphs()
             range = 1;
 
         size_t yAxisWidth = 0;
-        if (showYAxis)
-        {
+        if (showYAxis) {
             yAxisWidth = max(format("%.1f", maxVal).length, format("%.1f", minVal).length) + 1;
         }
 
         auto graphWidth = width - yAxisWidth;
         wchar[][] grid = new wchar[][](height, graphWidth);
-        foreach (ref row; grid)
-        {
+        foreach (ref row; grid) {
             row[] = ' ';
         }
 
-        if (showGrid)
-        {
-            foreach (y; 0 .. height)
-            {
-                if (y % 4 == 0 || y == height - 1)
-                {
-                    foreach (x; 0 .. graphWidth)
-                    {
+        if (showGrid) {
+            foreach (y; 0 .. height) {
+                if (y % 4 == 0 || y == height - 1) {
+                    foreach (x; 0 .. graphWidth) {
                         grid[y][x] = '─';
                     }
                 }
             }
 
-            foreach (x; 0 .. graphWidth)
-            {
-                if (x % 10 == 0)
-                {
-                    foreach (y; 0 .. height)
-                    {
+            foreach (x; 0 .. graphWidth) {
+                if (x % 10 == 0) {
+                    foreach (y; 0 .. height) {
                         if (grid[y][x] == '─')
                             grid[y][x] = '┼';
                         else
@@ -74,10 +62,8 @@ template ArkGraphs()
             }
         }
 
-        if (!scatter)
-        {
-            for (size_t i = 0; i < cast(int) data.length - 1; i++)
-            {
+        if (!scatter) {
+            for (size_t i = 0; i < cast(int) data.length - 1; i++) {
                 auto x1 = cast(size_t)((cast(double) i / (cast(int) data.length - 1)) * (
                         graphWidth - 1));
                 auto x2 = cast(size_t)(
@@ -96,13 +82,11 @@ template ArkGraphs()
                 auto x = cast(double) x1;
                 auto y = cast(double) y1;
 
-                for (int step = 0; step <= steps; step++)
-                {
+                for (int step = 0; step <= steps; step++) {
                     auto plotX = cast(size_t) x;
                     auto plotY = cast(size_t) y;
 
-                    if (plotX < graphWidth && plotY < height)
-                    {
+                    if (plotX < graphWidth && plotY < height) {
                         if (abs(xIncrement) > abs(yIncrement))
                             grid[plotY][plotX] = '─';
                         else if (abs(yIncrement) > abs(xIncrement))
@@ -117,21 +101,17 @@ template ArkGraphs()
             }
         }
 
-        foreach (i, value; data)
-        {
+        foreach (i, value; data) {
             auto x = cast(size_t)((cast(double) i / (cast(int) data.length - 1)) * (graphWidth - 1));
             auto y = cast(size_t)((1.0 - (value - minVal) / range) * (height - 1));
 
-            if (x < graphWidth && y < height)
-            {
+            if (x < graphWidth && y < height) {
                 grid[y][x] = '●';
             }
         }
 
-        foreach (y; 0 .. height)
-        {
-            if (showYAxis)
-            {
+        foreach (y; 0 .. height) {
+            if (showYAxis) {
                 if (y == 0)
                     writef("%*s ", yAxisWidth - 1, format("%.1f", maxVal));
                 else if (y == height - 1)
@@ -142,8 +122,7 @@ template ArkGraphs()
                     writef("%*s ", yAxisWidth - 1, "");
             }
 
-            foreach (x; 0 .. graphWidth)
-            {
+            foreach (x; 0 .. graphWidth) {
                 wchar ch = grid[y][x];
                 if (ch == '●' || ch == '─' || ch == '│')
                     write(colorize(ch.to!string, lineColor));
@@ -155,18 +134,15 @@ template ArkGraphs()
             writeln;
         }
 
-        if (xLabels.length > 0)
-        {
+        if (xLabels.length > 0) {
             if (showYAxis)
                 write(" ".replicate(yAxisWidth));
 
             auto labelStep = max(1, graphWidth / min(xLabels.length, 8));
 
-            foreach (i; 0 .. min(xLabels.length, graphWidth / 8))
-            {
+            foreach (i; 0 .. min(xLabels.length, graphWidth / 8)) {
                 auto pos = i * labelStep;
-                if (pos < graphWidth && i < xLabels.length)
-                {
+                if (pos < graphWidth && i < xLabels.length) {
                     if (i > 0)
                         write(" ".replicate(labelStep - xLabels[i - 1].length));
                     write(colorize(xLabels[i], Color.BRIGHT_BLACK));
@@ -185,23 +161,19 @@ template ArkGraphs()
         size_t level = 0,
         bool[] isLast = [],
         bool onlyReturn = false
-    )
-    {
+    ) {
         string result = "";
 
-        if (level == 0)
-        {
+        if (level == 0) {
             result ~= "root\n";
-            if (!onlyReturn)
-            {
+            if (!onlyReturn) {
                 write("root\n");
             }
         }
 
         string[] paths;
 
-        foreach (path, value; tree)
-        {
+        foreach (path, value; tree) {
             paths ~= path;
         }
 
@@ -210,36 +182,28 @@ template ArkGraphs()
         string[string] children;
         string[] immediateFiles;
 
-        foreach (path; paths)
-        {
+        foreach (path; paths) {
             string relativePath = path;
-            if (root.length > 0)
-            {
+            if (root.length > 0) {
                 if (!path.startsWith(root ~ "/"))
                     continue;
                 relativePath = path[root.length + 1 .. $];
             }
 
             auto slashIndex = relativePath.indexOf('/');
-            if (slashIndex == -1)
-            {
+            if (slashIndex == -1) {
                 immediateFiles ~= relativePath;
-            }
-            else
-            {
+            } else {
                 string dirName = relativePath[0 .. slashIndex];
-                if (dirName !in children)
-                {
+                if (dirName !in children) {
                     children[dirName] = "";
                 }
             }
         }
 
-        foreach (i, fileName; immediateFiles)
-        {
+        foreach (i, fileName; immediateFiles) {
             string indent = "";
-            foreach (j; 0 .. level)
-            {
+            foreach (j; 0 .. level) {
                 if (j < isLast.length && isLast[j])
                     indent ~= "    ";
                 else
@@ -259,11 +223,9 @@ template ArkGraphs()
         auto dirNames = children.keys.array.sort();
         int i = 0;
 
-        foreach (dirName; dirNames)
-        {
+        foreach (dirName; dirNames) {
             string indent = "";
-            foreach (j; 0 .. level)
-            {
+            foreach (j; 0 .. level) {
                 if (j < isLast.length && isLast[j])
                     indent ~= "    ";
                 else
@@ -295,25 +257,21 @@ template ArkGraphs()
         size_t height = 20,
         Color boxColor = Color.CYAN,
         Color arrowColor = Color.BRIGHT_BLACK
-    )
-    {
+    ) {
         if (nodes.length == 0)
             return;
 
         auto grid = new string[][](height, width);
-        foreach (ref row; grid)
-        {
+        foreach (ref row; grid) {
             row[] = " ";
         }
 
-        foreach (ref node; nodes)
-        {
+        foreach (ref node; nodes) {
             if (node.width == 0)
-                node.width = max(node.text.length + 4, 8);
+                node.width = max(length(node.text) + 4, 8);
         }
 
-        foreach (conn; connections)
-        {
+        foreach (conn; connections) {
             auto fromNode = nodes.find!(n => n.id == conn.fromId);
             auto toNode = nodes.find!(n => n.id == conn.toId);
 
@@ -326,30 +284,22 @@ template ArkGraphs()
             drawFlowGraphConnection(grid, from, to, conn.direction, width, height);
         }
 
-        foreach (node; nodes)
-        {
+        foreach (node; nodes) {
             drawFlowGraphBox(grid, node, width, height);
         }
 
-        foreach (y; 0 .. height)
-        {
+        foreach (y; 0 .. height) {
             string line = "";
-            foreach (x; 0 .. width)
-            {
+            foreach (x; 0 .. width) {
                 string cell = grid[y][x];
 
                 if (cell == "┌" || cell == "┐" || cell == "└" || cell == "┘" ||
-                    cell == "│" || cell == "─")
-                {
+                    cell == "│" || cell == "─") {
                     line ~= colorize(cell, boxColor);
-                }
-                else if (cell == "→" || cell == "↓" || cell == "←" || cell == "↑" ||
-                    cell == "┼" || cell == "┬" || cell == "┴" || cell == "├" || cell == "┤")
-                {
+                } else if (cell == "→" || cell == "↓" || cell == "←" || cell == "↑" ||
+                    cell == "┼" || cell == "┬" || cell == "┴" || cell == "├" || cell == "┤") {
                     line ~= colorize(cell, arrowColor);
-                }
-                else
-                {
+                } else {
                     line ~= cell;
                 }
             }
@@ -357,8 +307,7 @@ template ArkGraphs()
         }
     }
 
-    private static void drawFlowGraphBox(string[][] grid, FlowNode node, size_t maxWidth, size_t maxHeight)
-    {
+    private static void drawFlowGraphBox(string[][] grid, FlowNode node, size_t maxWidth, size_t maxHeight) {
         size_t boxHeight = 3;
 
         if (node.x >= maxWidth || node.y >= maxHeight ||
@@ -373,20 +322,15 @@ template ArkGraphs()
         grid[node.y][node.x + node.width - 1] = "┐";
         grid[node.y + 1][node.x] = "│";
 
-        size_t textStart = node.x + 1 + (node.width - 2 - node.text.length) / 2;
+        size_t textStart = node.x + 1 + (node.width - 2) / 2 - length(
+            node.text) / 2 + getAsiaCount(node.text) / 2 - 1;
 
-        foreach (i, c; node.text)
-        {
+        foreach (i, c; node.text) {
             if (textStart + i < node.x + node.width - 1)
                 grid[node.y + 1][textStart + i] = [c];
         }
-        foreach (i; 1 .. node.width - 1)
-        {
-            if (grid[node.y + 1][node.x + i] == " ")
-                grid[node.y + 1][node.x + i] = " ";
-        }
 
-        grid[node.y + 1][node.x + node.width - 1] = "│";
+        grid[node.y + 1][node.x + node.width + getAsiaCount(node.text) - 1] = "│";
         grid[node.y + 2][node.x] = "└";
 
         foreach (i; 1 .. node.width - 1)
@@ -402,12 +346,10 @@ template ArkGraphs()
         string direction,
         size_t maxWidth,
         size_t maxHeight
-    )
-    {
+    ) {
         size_t fromX, fromY, toX, toY;
 
-        switch (direction)
-        {
+        switch (direction) {
         case "down":
             fromX = from.x + from.width / 2;
             fromY = from.y + 3;
@@ -417,7 +359,7 @@ template ArkGraphs()
         case "right":
             fromX = from.x + from.width;
             fromY = from.y + 1;
-            toX = to.x;
+            toX = to.x + getAsiaCount(from.text);
             toY = to.y + 1;
             break;
         case "up":
@@ -436,15 +378,12 @@ template ArkGraphs()
             return;
         }
 
-        if (direction == "down" || direction == "up")
-        {
+        if (direction == "down" || direction == "up") {
             size_t startY = min(fromY, toY);
             size_t endY = max(fromY, toY);
 
-            if (fromX < maxWidth)
-            {
-                foreach (y; startY .. endY)
-                {
+            if (fromX < maxWidth) {
+                foreach (y; startY .. endY) {
                     if (y < maxHeight && grid[y][fromX] == " ")
                         grid[y][fromX] = "│";
                 }
@@ -453,16 +392,12 @@ template ArkGraphs()
                 else if (direction == "up" && toY < maxHeight && toX < maxWidth)
                     grid[toY][toX] = "↑";
             }
-        }
-        else if (direction == "right" || direction == "left")
-        {
+        } else if (direction == "right" || direction == "left") {
             size_t startX = min(fromX, toX);
             size_t endX = max(fromX, toX);
 
-            if (fromY < maxHeight)
-            {
-                foreach (x; startX .. endX)
-                {
+            if (fromY < maxHeight) {
+                foreach (x; startX .. endX) {
                     if (x < maxWidth && grid[fromY][x] == " ")
                         grid[fromY][x] = "─";
                 }

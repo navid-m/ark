@@ -1,9 +1,7 @@
 module ark.charts;
 
-template ArkCharts()
-{
-    struct ArkBarConfiguration
-    {
+template ArkCharts() {
+    struct ArkBarConfiguration {
         Color[] colors;
         bool smartRounding = true;
         int decimalPlaces = 1;
@@ -12,8 +10,7 @@ template ArkCharts()
          * Get the color for a specific bar index.
          * Falls back to the default color if no custom color is set.
          */
-        Color getColorForBar(size_t index, Color defaultColor) const
-        {
+        Color getColorForBar(size_t index, Color defaultColor) const {
             if (index < colors.length)
                 return colors[index];
             return defaultColor;
@@ -22,21 +19,17 @@ template ArkCharts()
         /**
          * Check if custom colors are configured.
          */
-        bool hasCustomColors() const
-        {
+        bool hasCustomColors() const {
             return colors.length > 0;
         }
 
-        string formatNumber(double value) const
-        {
-            if (smartRounding)
-            {
+        string formatNumber(double value) const {
+            if (smartRounding) {
                 if (value == cast(long) value)
                     return format("%d", cast(long) value);
                 else
                     return format("%.1f", value);
-            }
-            else
+            } else
                 return format("%.*f", decimalPlaces, value);
         }
     }
@@ -61,8 +54,7 @@ template ArkCharts()
         Color barColor = Color.CYAN,
         string title = "",
         ArkBarConfiguration config = ArkBarConfiguration.init
-    )
-    {
+    ) {
         if (labels.length == 0 || values.length == 0 || labels.length != values.length)
             return;
 
@@ -73,10 +65,8 @@ template ArkCharts()
         auto maxLabelWidth = labels.map!(l => l.length).maxElement;
 
         size_t maxValueWidth = 0;
-        if (showValues)
-        {
-            foreach (value; values)
-            {
+        if (showValues) {
+            foreach (value; values) {
                 auto formatted = config.formatNumber(value);
                 if (formatted.length > maxValueWidth)
                     maxValueWidth = formatted.length;
@@ -89,11 +79,9 @@ template ArkCharts()
 
         size_t totalWidth = innerWidth + 4;
 
-        if (title.length > 0)
-        {
+        if (title.length > 0) {
             size_t availableForTitle = totalWidth - 6; // subtract "┌─┤ " and " ├─┐"
-            if (title.length <= availableForTitle)
-            {
+            if (title.length <= availableForTitle) {
                 size_t leftPadding = (availableForTitle - title.length) / 2;
                 size_t rightPadding = availableForTitle - title.length - leftPadding;
 
@@ -104,35 +92,29 @@ template ArkCharts()
                 write(colorize(" ├", Color.BRIGHT_BLACK));
                 write(colorize("─".replicate(rightPadding), Color.BRIGHT_BLACK));
                 write(colorize("─┐", Color.BRIGHT_BLACK));
-            }
-            else
-            {
+            } else {
                 write(colorize("┌", Color.BRIGHT_BLACK));
                 write(colorize("─".replicate(totalWidth - 2), Color.BRIGHT_BLACK));
                 write(colorize("┐", Color.BRIGHT_BLACK));
             }
             writeln;
-        }
-        else
-        {
+        } else {
             write(colorize("┌", Color.BRIGHT_BLACK));
             write(colorize("─".replicate(totalWidth - 2), Color.BRIGHT_BLACK));
             write(colorize("┐", Color.BRIGHT_BLACK));
             writeln;
         }
 
-        foreach (i, label; labels)
-        {
+        foreach (i, label; labels) {
             auto value = values[i];
             auto barLength = cast(size_t)((value / maxValue) * maxBarWidth);
             Color currentBarColor = config.getColorForBar(i, barColor);
             write(colorize("│ ", Color.BRIGHT_BLACK));
-            writef("%-*s", maxLabelWidth, label);
+            writef("%-*s", maxLabelWidth - getAsiaCount(label), label);
             write(" │");
             write(colorize("█".replicate(barLength), currentBarColor));
             write(" ".replicate(maxBarWidth - barLength));
-            if (showValues)
-            {
+            if (showValues) {
                 write(" ");
                 writef("%*s", maxValueWidth, config.formatNumber(value));
             }
@@ -165,15 +147,13 @@ template ArkCharts()
         string title = "",
         Color[] colors = [],
         LegendStyle legendStyle = LegendStyle.DOT
-    )
-    {
+    ) {
         import std.algorithm : sum, maxElement, map;
 
         if (labels.length == 0 || values.length == 0 || labels.length != values.length)
             return;
 
-        if (colors.length == 0)
-        {
+        if (colors.length == 0) {
             colors = [
                 Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.MAGENTA,
                 Color.CYAN, Color.BRIGHT_RED, Color.BRIGHT_GREEN,
@@ -185,8 +165,7 @@ template ArkCharts()
         if (total == 0)
             return;
 
-        if (title.length > 0)
-        {
+        if (title.length > 0) {
             drawSeparator("─", title.length, Color.BRIGHT_BLACK);
             writeln(colorize(title, Color.BRIGHT_WHITE));
             drawSeparator("─", title.length, Color.BRIGHT_BLACK);
@@ -194,8 +173,7 @@ template ArkCharts()
 
         size_t[] segments;
         double[] proportions;
-        foreach (val; values)
-        {
+        foreach (val; values) {
             double pct = val / total;
             proportions ~= pct;
             segments ~= cast(size_t)(pct * width);
@@ -205,30 +183,24 @@ template ArkCharts()
         if (used < width)
             segments[segments.maxIndex] += width - used;
 
-        foreach (i, seg; segments)
-        {
+        foreach (i, seg; segments) {
             string block = "█".replicate(seg);
             write(colorize(block, colors[i % colors.length]));
         }
 
         writeln;
         drawSeparator("─", width, Color.BRIGHT_BLACK);
-        if (legendStyle == LegendStyle.TABLE)
-        {
+        if (legendStyle == LegendStyle.TABLE) {
             auto labelWidth = labels.map!(l => l.length).maxElement;
-            foreach (i, label; labels)
-            {
+            foreach (i, label; labels) {
                 auto percentage = proportions[i] * 100;
                 string sample = colorize("██", colors[i % colors.length]);
                 writef("%s %-*s │ %5.1f%% │ %8.2f\n",
                     sample, labelWidth, label, percentage, values[i]
                 );
             }
-        }
-        else if (legendStyle == LegendStyle.DOT)
-        {
-            foreach (i, label; labels)
-            {
+        } else if (legendStyle == LegendStyle.DOT) {
+            foreach (i, label; labels) {
                 auto pct = proportions[i] * 100;
                 string dot = colorize("●", colors[i % colors.length]);
                 writef("%s %s %.1f%% ", dot, label, pct);
@@ -256,8 +228,7 @@ template ArkCharts()
         string title = "",
         bool showLegend = true,
         Color[] colors = []
-    )
-    {
+    ) {
         import std.math : PI, cos, sin, atan2, sqrt;
         import std.algorithm : sum, maxElement;
         import std.conv : to;
@@ -267,16 +238,14 @@ template ArkCharts()
         if (labels.length == 0 || values.length == 0 || labels.length != values.length)
             return;
 
-        if (colors.length == 0)
-        {
+        if (colors.length == 0) {
             colors = [
                 Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW,
                 Color.MAGENTA, Color.CYAN, Color.BRIGHT_RED, Color.BRIGHT_GREEN
             ];
         }
 
-        if (title.length > 0)
-        {
+        if (title.length > 0) {
             writeln(colorize(title, Color.BRIGHT_WHITE));
             drawSeparator("─", title.length, Color.BRIGHT_BLACK);
         }
@@ -287,47 +256,38 @@ template ArkCharts()
 
         double[] angles = new double[values.length + 1];
         angles[0] = 0;
-        foreach (i, value; values)
-        {
+        foreach (i, value; values) {
             angles[i + 1] = angles[i] + (value / totalValue) * 2 * PI;
         }
 
         auto size = radius * 2 + 1;
         wchar[][] grid = new wchar[][](size, size * 2);
-        foreach (ref row; grid)
-        {
+        foreach (ref row; grid) {
             row[] = ' ';
         }
 
         auto centerX = radius;
         auto centerY = radius;
 
-        foreach (y; 0 .. size)
-        {
-            foreach (x; 0 .. size * 2)
-            {
+        foreach (y; 0 .. size) {
+            foreach (x; 0 .. size * 2) {
                 auto dx = (cast(double) x / 2.2) - centerX;
                 auto dy = cast(double) y - centerY;
                 auto distance = sqrt(dx * dx + dy * dy);
 
-                if (distance <= radius)
-                {
+                if (distance <= radius) {
                     auto angle = atan2(dy, dx);
                     if (angle < 0)
                         angle += 2 * PI;
 
-                    foreach (i; 0 .. values.length)
-                    {
-                        if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1]))
-                        {
+                    foreach (i; 0 .. values.length) {
+                        if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1])) {
                             wchar ch;
-                            if (distance > radius - 0.6)
-                            {
+                            if (distance > radius - 0.6) {
                                 double quadrant = angle / (PI / 2);
                                 int q = cast(int) quadrant;
                                 ch = ['◜', '◝', '◞', '◟'][q % 4];
-                            }
-                            else
+                            } else
                                 ch = '●';
                             grid[y][x] = ch;
                             break;
@@ -337,44 +297,33 @@ template ArkCharts()
             }
         }
 
-        foreach (y; 0 .. size)
-        {
-            foreach (x; 0 .. size * 2)
-            {
+        foreach (y; 0 .. size) {
+            foreach (x; 0 .. size * 2) {
                 wchar ch = grid[y][x];
-                if (ch != ' ')
-                {
+                if (ch != ' ') {
                     int sliceIndex = -1;
                     auto dx = (cast(double) x / 2.2) - centerX;
                     auto dy = cast(double) y - centerY;
                     auto distance = sqrt(dx * dx + dy * dy);
-                    if (distance <= radius)
-                    {
+                    if (distance <= radius) {
                         auto angle = atan2(dy, dx);
                         if (angle < 0)
                             angle += 2 * PI;
 
-                        foreach (i; 0 .. values.length)
-                        {
-                            if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1]))
-                            {
+                        foreach (i; 0 .. values.length) {
+                            if (angle >= angles[i] && (i == cast(int) values.length - 1 || angle < angles[i + 1])) {
                                 sliceIndex = cast(int) i;
                                 break;
                             }
                         }
                     }
-                    if (sliceIndex >= 0)
-                    {
+                    if (sliceIndex >= 0) {
                         auto colorIndex = sliceIndex % colors.length;
                         write(colorize(ch.to!string, colors[colorIndex]));
-                    }
-                    else
-                    {
+                    } else {
                         write(ch);
                     }
-                }
-                else
-                {
+                } else {
                     write(' ');
                 }
             }
@@ -383,19 +332,17 @@ template ArkCharts()
 
         writeln;
 
-        if (showLegend)
-        {
+        if (showLegend) {
             drawSeparator("─", 40, Color.BRIGHT_BLACK);
             auto maxLabelWidth = labels.map!(l => l.length).maxElement;
 
-            foreach (i, label; labels)
-            {
+            foreach (i, label; labels) {
                 auto percentage = (values[i] / totalValue) * 100;
                 auto colorIndex = i % colors.length;
                 string indicator = colorize("●●", colors[colorIndex]);
                 writef("%s %-*s │ %6.1f%% │ %8.2f\n",
                     indicator,
-                    maxLabelWidth,
+                    maxLabelWidth - getAsiaCount(label),
                     label,
                     percentage,
                     values[i]
@@ -405,8 +352,7 @@ template ArkCharts()
         }
     }
 
-    static void drawSparkline(double[] data, size_t width = 50, string label = "")
-    {
+    static void drawSparkline(double[] data, size_t width = 50, string label = "") {
         if (data.length == 0)
             return;
 
@@ -423,8 +369,7 @@ template ArkCharts()
         ];
         string sparkline = "";
 
-        foreach (val; data)
-        {
+        foreach (val; data) {
             auto normalized = (val - minVal) / range;
             auto charIndex = cast(size_t)(
                 normalized * (
